@@ -1,8 +1,8 @@
 import '../css/emoji-button.css';
 
-import createFocusTrap, { FocusTrap } from 'focus-trap';
+import createFocusTrap from 'focus-trap';
 import { TinyEmitter as Emitter } from 'tiny-emitter';
-import { createPopper, Instance as Popper, Placement } from '@popperjs/core';
+import { createPopper } from '@popperjs/core';
 import twemoji from 'twemoji';
 
 import emojiData from './data/emoji';
@@ -32,21 +32,13 @@ import {
   CLASS_PLUGIN_CONTAINER
 } from './classes';
 
-import {
-  EmojiButtonOptions,
-  I18NStrings,
-  EmojiRecord,
-  EmojiSelection,
-  EmojiTheme,
-  FixedPosition
-} from './types';
 import { EmojiArea } from './emojiArea';
 
 const MOBILE_BREAKPOINT = 450;
 
 const STYLE_TWEMOJI = 'twemoji';
 
-const DEFAULT_OPTIONS: EmojiButtonOptions = {
+const DEFAULT_OPTIONS = {
   position: 'auto',
   autoHide: true,
   autoFocusSearch: true,
@@ -83,34 +75,25 @@ const DEFAULT_OPTIONS: EmojiButtonOptions = {
 };
 
 export class EmojiButton {
-  private pickerVisible: boolean;
+  pickerVisible;
+  hideInProgress;
+  events = new Emitter();
+  publicEvents = new Emitter();
+  options;
+  i18n;
+  pickerEl;
+  pickerContent;
+  wrapper;
+  focusTrap;
+  emojiArea;
+  search;
+  overlay;
+  popper;
+  observer;
+  theme;
+  emojiCategories;
 
-  private hideInProgress: boolean;
-
-  private events = new Emitter();
-  private publicEvents = new Emitter();
-  private options: EmojiButtonOptions;
-  private i18n: I18NStrings;
-
-  private pickerEl: HTMLElement;
-  private pickerContent: HTMLElement;
-  private wrapper: HTMLElement;
-  private focusTrap: FocusTrap;
-
-  private emojiArea: EmojiArea;
-  private search: Search;
-
-  private overlay?: HTMLElement;
-
-  private popper: Popper;
-
-  private observer: IntersectionObserver;
-
-  private theme: EmojiTheme;
-
-  private emojiCategories: { [key: string]: EmojiRecord[] };
-
-  constructor(options: EmojiButtonOptions = {}) {
+  constructor(options = {}) {
     this.pickerVisible = false;
 
     this.options = { ...DEFAULT_OPTIONS, ...options };
@@ -141,7 +124,7 @@ export class EmojiButton {
    * @param event The name of the event to listen for
    * @param callback The function to call when the event is fired
    */
-  on(event: string, callback: (arg?: any) => void): void {
+  on(event, callback) {
     this.publicEvents.on(event, callback);
   }
 
@@ -151,14 +134,14 @@ export class EmojiButton {
    * @param event The name of the event
    * @param callback The callback to remove
    */
-  off(event: string, callback: (arg?: any) => void): void {
+  off(event, callback) {
     this.publicEvents.off(event, callback);
   }
 
   /**
    * Sets any CSS variable values that need to be set.
    */
-  private setStyleProperties(): void {
+  setStyleProperties() {
     if (!this.options.showAnimation) {
       this.pickerEl.style.setProperty('--animation-duration', '0s');
     }
@@ -199,7 +182,7 @@ export class EmojiButton {
    *
    * @param searchResults The element containing the search results.
    */
-  private showSearchResults(searchResults: HTMLElement): void {
+  showSearchResults(searchResults) {
     empty(this.pickerContent);
     searchResults.classList.add('search-results');
     this.pickerContent.appendChild(searchResults);
@@ -208,7 +191,7 @@ export class EmojiButton {
   /**
    * Hides the search results and resets the picker.
    */
-  private hideSearchResults(): void {
+  hideSearchResults() {
     if (this.pickerContent.firstChild !== this.emojiArea.container) {
       empty(this.pickerContent);
       this.pickerContent.appendChild(this.emojiArea.container);
@@ -221,23 +204,13 @@ export class EmojiButton {
    * Emits a selected emoji event.
    * @param param0 The selected emoji and show variants flag
    */
-  private async emitEmoji({
-    emoji,
-    showVariants
-  }: {
-    emoji: EmojiRecord;
-    showVariants: boolean;
-  }): Promise<void> {
-    if (
-      (emoji as EmojiRecord).variations &&
-      showVariants &&
-      this.options.showVariants
-    ) {
-      this.showVariantPopup(emoji as EmojiRecord);
+  async emitEmoji({ emoji, showVariants }) {
+    if (emoji.variations && showVariants && this.options.showVariants) {
+      this.showVariantPopup(emoji);
     } else {
       setTimeout(() => this.emojiArea.updateRecents());
 
-      let eventData: EmojiSelection;
+      let eventData;
       if (emoji.custom) {
         eventData = this.emitCustomEmoji(emoji);
       } else if (this.options.style === STYLE_TWEMOJI) {
@@ -258,7 +231,7 @@ export class EmojiButton {
    * Emits a native emoji record.
    * @param emoji The selected emoji
    */
-  private emitNativeEmoji(emoji: EmojiRecord): EmojiSelection {
+  emitNativeEmoji(emoji) {
     return {
       emoji: emoji.emoji,
       name: emoji.name
@@ -269,7 +242,7 @@ export class EmojiButton {
    * Emits a custom emoji record.
    * @param emoji The selected emoji
    */
-  private emitCustomEmoji(emoji: EmojiRecord): EmojiSelection {
+  emitCustomEmoji(emoji) {
     return {
       url: emoji.emoji,
       name: emoji.name,
@@ -281,11 +254,11 @@ export class EmojiButton {
    * Emits a Twemoji emoji record.
    * @param emoji The selected emoji
    */
-  private emitTwemoji(emoji: EmojiRecord): Promise<EmojiSelection> {
+  emitTwemoji(emoji) {
     return new Promise(resolve => {
       twemoji.parse(emoji.emoji, {
         ...this.options.twemojiOptions,
-        callback: (icon, { base, size, ext }: any) => {
+        callback: (icon, { base, size, ext }) => {
           const imageUrl = `${base}${size}/${icon}${ext}`;
           resolve({
             url: imageUrl,
@@ -302,7 +275,7 @@ export class EmojiButton {
   /**
    * Builds the search UI.
    */
-  private buildSearch(): void {
+  buildSearch() {
     if (this.options.showSearch) {
       this.search = new Search(
         this.events,
@@ -321,7 +294,7 @@ export class EmojiButton {
   /**
    * Builds the emoji preview area.
    */
-  private buildPreview(): void {
+  buildPreview() {
     if (this.options.showPreview) {
       this.pickerEl.appendChild(
         new EmojiPreview(this.events, this.options).render()
@@ -332,7 +305,7 @@ export class EmojiButton {
   /**
    * Initializes any plugins that were specified.
    */
-  private initPlugins(): void {
+  initPlugins() {
     if (this.options.plugins) {
       const pluginContainer = createElement('div', CLASS_PLUGIN_CONTAINER);
 
@@ -352,8 +325,8 @@ export class EmojiButton {
   /**
    * Initializes the emoji picker's focus trap.
    */
-  private initFocusTrap(): void {
-    this.focusTrap = createFocusTrap(this.pickerEl as HTMLElement, {
+  initFocusTrap() {
+    this.focusTrap = createFocusTrap(this.pickerEl, {
       clickOutsideDeactivates: true,
       initialFocus:
         this.options.showSearch && this.options.autoFocusSearch
@@ -365,7 +338,7 @@ export class EmojiButton {
   /**
    * Builds the emoji picker.
    */
-  private buildPicker(): void {
+  buildPicker() {
     this.pickerEl = createElement('div', CLASS_PICKER);
     this.pickerEl.classList.add(this.theme);
 
@@ -413,7 +386,7 @@ export class EmojiButton {
    *
    * @param emoji The emoji whose variants are to be shown.
    */
-  private showVariantPopup(emoji: EmojiRecord): void {
+  showVariantPopup(emoji) {
     const variantPopup = new VariantPopup(
       this.events,
       emoji,
@@ -440,7 +413,7 @@ export class EmojiButton {
    * Initializes the IntersectionObserver for lazy loading emoji images
    * as they are scrolled into view.
    */
-  private observeForLazyLoad(): void {
+  observeForLazyLoad() {
     this.observer = new IntersectionObserver(
       this.handleIntersectionChange.bind(this),
       {
@@ -450,8 +423,8 @@ export class EmojiButton {
 
     this.emojiArea.emojis
       .querySelectorAll(`.${CLASS_EMOJI}`)
-      .forEach((element: Element) => {
-        if (this.shouldLazyLoad(element as HTMLElement)) {
+      .forEach(element => {
+        if (this.shouldLazyLoad(element)) {
           this.observer.observe(element);
         }
       });
@@ -463,15 +436,12 @@ export class EmojiButton {
    *
    * @param entries The entries observed by the IntersectionObserver.
    */
-  private handleIntersectionChange(entries: IntersectionObserverEntry[]): void {
+  handleIntersectionChange(entries) {
     Array.prototype.filter
-      .call(
-        entries,
-        (entry: IntersectionObserverEntry) => entry.intersectionRatio > 0
-      )
-      .map((entry: IntersectionObserverEntry) => entry.target)
-      .forEach((element: Element) => {
-        lazyLoadEmoji(element as HTMLElement, this.options);
+      .call(entries, entry => entry.intersectionRatio > 0)
+      .map(entry => entry.target)
+      .forEach(element => {
+        lazyLoadEmoji(element, this.options);
       });
   }
 
@@ -481,7 +451,7 @@ export class EmojiButton {
    * @param element The element containing the emoji.
    * @return true if the emoji should be lazily loaded, false if not.
    */
-  private shouldLazyLoad(element: HTMLElement): boolean {
+  shouldLazyLoad(element) {
     return (
       this.options.style === STYLE_TWEMOJI || element.dataset.custom === 'true'
     );
@@ -493,8 +463,8 @@ export class EmojiButton {
    *
    * @param event The MouseEvent that was dispatched.
    */
-  private onDocumentClick(event: MouseEvent): void {
-    if (!this.pickerEl.contains(event.target as Node)) {
+  onDocumentClick(event) {
+    if (!this.pickerEl.contains(event.target)) {
       this.hidePicker();
     }
   }
@@ -503,7 +473,7 @@ export class EmojiButton {
    * Destroys the picker. Once this is called, the picker can no longer
    * be shown.
    */
-  destroyPicker(): void {
+  destroyPicker() {
     this.events.off(EMOJI);
     this.events.off(HIDE_VARIANT_POPUP);
 
@@ -525,7 +495,7 @@ export class EmojiButton {
   /**
    * Hides, but does not destroy, the picker.
    */
-  hidePicker(): void {
+  hidePicker() {
     this.hideInProgress = true;
     this.focusTrap.deactivate();
     this.pickerVisible = false;
@@ -581,7 +551,7 @@ export class EmojiButton {
    *
    * @param referenceEl The element to position relative to if relative positioning is used.
    */
-  showPicker(referenceEl: HTMLElement): void {
+  showPicker(referenceEl) {
     if (this.hideInProgress) {
       setTimeout(() => this.showPicker(referenceEl), 100);
       return;
@@ -608,7 +578,7 @@ export class EmojiButton {
    *
    * @param referenceEl The element to position relative to if relative positioning is used.
    */
-  determineDisplay(referenceEl: HTMLElement): void {
+  determineDisplay(referenceEl) {
     if (
       window.matchMedia(`screen and (max-width: ${MOBILE_BREAKPOINT}px)`)
         .matches
@@ -625,21 +595,21 @@ export class EmojiButton {
    * Sets the initial focus to the appropriate element, depending on the specified
    * options.
    */
-  setInitialFocus(): void {
+  setInitialFocus() {
     // If the search field is visible and should be auto-focused, set the focus on
     // the search field. Otherwise, the initial focus will be on the first focusable emoji.
     const initialFocusElement = this.pickerEl.querySelector(
       this.options.showSearch && this.options.autoFocusSearch
         ? `.${CLASS_SEARCH_FIELD}`
         : `.${CLASS_EMOJI}[tabindex="0"]`
-    ) as HTMLElement;
+    );
     initialFocusElement.focus();
   }
 
   /**
    * Adds the event listeners that will close the picker without selecting an emoji.
    */
-  private addEventListeners(): void {
+  addEventListeners() {
     document.addEventListener('click', this.onDocumentClick);
     document.addEventListener('keydown', this.onDocumentKeydown);
   }
@@ -649,20 +619,20 @@ export class EmojiButton {
    *
    * @param referenceEl The element to position relative to.
    */
-  private setRelativePosition(referenceEl: HTMLElement): void {
+  setRelativePosition(referenceEl) {
     this.popper = createPopper(referenceEl, this.wrapper, {
-      placement: this.options.position as Placement
+      placement: this.options.position
     });
   }
 
   /**
    * Sets fixed positioning.
    */
-  private setFixedPosition(): void {
+  setFixedPosition() {
     if (this.options?.position) {
       this.wrapper.style.position = 'fixed';
 
-      const fixedPosition = this.options.position as FixedPosition;
+      const fixedPosition = this.options.position;
 
       Object.keys(fixedPosition).forEach(key => {
         this.wrapper.style[key] = fixedPosition[key];
@@ -673,7 +643,7 @@ export class EmojiButton {
   /**
    * Shows the picker in a mobile view.
    */
-  private showMobileView(): void {
+  showMobileView() {
     const style = window.getComputedStyle(this.pickerEl);
     const htmlEl = document.querySelector('html');
     const viewportHeight = htmlEl && htmlEl.clientHeight;
@@ -699,7 +669,7 @@ export class EmojiButton {
    *
    * @param referenceEl The element to position relative to if relative positioning is used.
    */
-  togglePicker(referenceEl: HTMLElement): void {
+  togglePicker(referenceEl) {
     this.pickerVisible ? this.hidePicker() : this.showPicker(referenceEl);
   }
 
@@ -707,7 +677,7 @@ export class EmojiButton {
    * Determines whether or not the picker is currently visible.
    * @return true if the picker is visible, false if not.
    */
-  isPickerVisible(): boolean {
+  isPickerVisible() {
     return this.pickerVisible;
   }
 
@@ -715,7 +685,7 @@ export class EmojiButton {
    * Handles a keydown event on the document.
    * @param event The keyboard event that was dispatched.
    */
-  private onDocumentKeydown(event: KeyboardEvent): void {
+  onDocumentKeydown(event) {
     if (event.key === 'Escape') {
       // Escape closes the picker.
       this.hidePicker();
@@ -731,7 +701,7 @@ export class EmojiButton {
   /**
    * Sets the theme to use for the picker.
    */
-  setTheme(theme: EmojiTheme): void {
+  setTheme(theme) {
     if (theme !== this.theme) {
       this.pickerEl.classList.remove(this.theme);
       this.theme = theme;

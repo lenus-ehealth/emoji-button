@@ -4,15 +4,14 @@ import { SHOW_SEARCH_RESULTS } from './events';
 import { Search } from './search';
 
 import { i18n } from './i18n';
-import { EmojiButtonOptions, EmojiRecord } from './types';
 
 describe('Search', () => {
-  const emojis: EmojiRecord[] = [
+  const emojis = [
     { category: 0, emoji: '⚡️', name: 'zap', version: '12.1' },
     { category: 1, emoji: '😀', name: 'grinning', version: '12.1' }
   ];
 
-  const options: EmojiButtonOptions = { emojiVersion: '12.1', style: 'native' };
+  const options = { emojiVersion: '12.1', style: 'native' };
   let events;
   let search;
   let searchField;

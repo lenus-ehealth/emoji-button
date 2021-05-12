@@ -1,5 +1,3 @@
-import { TinyEmitter as Emitter } from 'tiny-emitter';
-
 import * as icons from './icons';
 
 import { EmojiContainer } from './emojiContainer';
@@ -10,7 +8,6 @@ import {
   HIDE_SEARCH_RESULTS
 } from './events';
 import { createElement, empty } from './util';
-import { I18NStrings, EmojiButtonOptions, EmojiRecord } from './types';
 
 import {
   CLASS_SEARCH_CONTAINER,
@@ -24,9 +21,12 @@ import {
 import fuzzysort from 'fuzzysort';
 
 class NotFoundMessage {
-  constructor(private message: string, private iconUrl?: string) {}
+  constructor(message, iconUrl) {
+    this.message = message;
+    this.iconUrl = iconUrl;
+  }
 
-  render(): HTMLElement {
+  render() {
     const container = createElement('div', CLASS_NOT_FOUND);
 
     const iconContainer = createElement('div', CLASS_NOT_FOUND_ICON);
@@ -48,27 +48,17 @@ class NotFoundMessage {
 }
 
 export class Search {
-  private emojiData: EmojiRecord[];
-  private emojisPerRow: number;
-  private focusedEmojiIndex = 0;
+  focusedEmojiIndex = 0;
 
-  private searchContainer: HTMLElement;
-  private searchField: HTMLInputElement;
-  private searchIcon: HTMLElement;
-  private resultsContainer: HTMLElement | null;
-
-  constructor(
-    private events: Emitter,
-    private i18n: I18NStrings,
-    private options: EmojiButtonOptions,
-    emojiData: EmojiRecord[],
-    categories: number[]
-  ) {
+  constructor(events, i18n, options, emojiData, categories) {
+    this.events = events;
+    this.i18n = i18n;
+    this.options = options;
     this.emojisPerRow = this.options.emojisPerRow || 8;
     this.emojiData = emojiData.filter(
       e =>
         e.version &&
-        parseFloat(e.version) <= parseFloat(options.emojiVersion as string) &&
+        parseFloat(e.version) <= parseFloat(options.emojiVersion) &&
         e.category !== undefined &&
         categories.indexOf(e.category) >= 0
     );
@@ -87,13 +77,10 @@ export class Search {
     });
   }
 
-  render(): HTMLElement {
+  render() {
     this.searchContainer = createElement('div', CLASS_SEARCH_CONTAINER);
 
-    this.searchField = createElement(
-      'input',
-      CLASS_SEARCH_FIELD
-    ) as HTMLInputElement;
+    this.searchField = createElement('input', CLASS_SEARCH_FIELD);
     this.searchField.placeholder = this.i18n.search;
     this.searchContainer.appendChild(this.searchField);
 
@@ -105,13 +92,13 @@ export class Search {
       this.searchIcon.innerHTML = icons.search;
     }
 
-    this.searchIcon.addEventListener('click', (event: MouseEvent) =>
+    this.searchIcon.addEventListener('click', event =>
       this.onClearSearch(event)
     );
 
     this.searchContainer.appendChild(this.searchIcon);
 
-    this.searchField.addEventListener('keydown', (event: KeyboardEvent) =>
+    this.searchField.addEventListener('keydown', event =>
       this.onKeyDown(event)
     );
     this.searchField.addEventListener('keyup', event => this.onKeyUp(event));
@@ -119,15 +106,15 @@ export class Search {
     return this.searchContainer;
   }
 
-  clear(): void {
+  clear() {
     this.searchField.value = '';
   }
 
-  focus(): void {
+  focus() {
     this.searchField.focus();
   }
 
-  onClearSearch(event: Event): void {
+  onClearSearch(event) {
     event.stopPropagation();
 
     if (this.searchField.value) {
@@ -151,20 +138,20 @@ export class Search {
     }
   }
 
-  setFocusedEmoji(index: number): void {
+  setFocusedEmoji(index) {
     if (this.resultsContainer) {
       const emojis = this.resultsContainer.querySelectorAll(`.${CLASS_EMOJI}`);
-      const currentFocusedEmoji = emojis[this.focusedEmojiIndex] as HTMLElement;
+      const currentFocusedEmoji = emojis[this.focusedEmojiIndex];
       currentFocusedEmoji.tabIndex = -1;
 
       this.focusedEmojiIndex = index;
-      const newFocusedEmoji = emojis[this.focusedEmojiIndex] as HTMLElement;
+      const newFocusedEmoji = emojis[this.focusedEmojiIndex];
       newFocusedEmoji.tabIndex = 0;
       newFocusedEmoji.focus();
     }
   }
 
-  handleResultsKeydown(event: KeyboardEvent): void {
+  handleResultsKeydown(event) {
     if (this.resultsContainer) {
       const emojis = this.resultsContainer.querySelectorAll(`.${CLASS_EMOJI}`);
       if (event.key === 'ArrowRight') {
@@ -189,13 +176,13 @@ export class Search {
     }
   }
 
-  onKeyDown(event: KeyboardEvent): void {
+  onKeyDown(event) {
     if (event.key === 'Escape' && this.searchField.value) {
       this.onClearSearch(event);
     }
   }
 
-  onKeyUp(event: KeyboardEvent): void {
+  onKeyUp(event) {
     if (event.key === 'Tab' || event.key === 'Shift') {
       return;
     } else if (!this.searchField.value) {
@@ -241,9 +228,8 @@ export class Search {
         ).render();
 
         if (this.resultsContainer) {
-          (this.resultsContainer.querySelector(
-            `.${CLASS_EMOJI}`
-          ) as HTMLElement).tabIndex = 0;
+          // TODO utility for encapsulating querySelector on predefined classes
+          this.resultsContainer.querySelector(`.${CLASS_EMOJI}`).tabIndex = 0;
           this.focusedEmojiIndex = 0;
 
           this.resultsContainer.addEventListener('keydown', event =>

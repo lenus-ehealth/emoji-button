@@ -63,6 +63,6 @@
     /* Advanced Options */
     "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
   },
-  "include": ["src/*.ts"],
+  "include": ["src/*.ts", "src/variantPopup.js", "src/util.js", "src/search.js", "src/recent.js", "src/preview.js", "src/lazyLoad.js", "src/icons.js", "src/i18n.js", "src/events.js", "src/emojiContainer.js", "src/emojiArea.js", "src/emoji.js", "src/classes.js", "src/categoryButtons.js"],
   "exclude": ["src/*.test.ts"]
 }

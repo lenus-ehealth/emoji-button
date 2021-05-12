@@ -10,14 +10,10 @@ describe('EmojiPreview', () => {
 
     events.emit(SHOW_PREVIEW, { emoji: '⚡️', name: 'zap' });
 
-    const previewEmoji = preview.querySelector(
-      '.emoji-picker__preview-emoji'
-    ) as HTMLElement;
+    const previewEmoji = preview.querySelector('.emoji-picker__preview-emoji');
     expect(previewEmoji.innerHTML).toBe('⚡️');
 
-    const previewName = preview.querySelector(
-      '.emoji-picker__preview-name'
-    ) as HTMLElement;
+    const previewName = preview.querySelector('.emoji-picker__preview-name');
     expect(previewName.innerHTML).toBe('zap');
 
     events.emit(HIDE_PREVIEW);

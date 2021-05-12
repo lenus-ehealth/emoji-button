@@ -14,9 +14,9 @@
     "build:watch": "rollup -cw",
     "start": "npm run build:watch",
     "prepublishOnly": "cross-env NODE_ENV=production rollup -c",
-    "test": "jest src/**.test.ts",
-    "test:watch": "jest --watchAll",
-    "lint": "eslint src/*.ts",
+    "test": "jest src/**.test.js",
+    "test:watch": "jest --watchAll src/**.test.js",
+    "lint": "eslint src/*.js",
     "prettify": "prettier src/*.ts --write"
   },
   "author": "Joe Attardi <jattardi@gmail.com> (https://joeattardi.codes)",

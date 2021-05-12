@@ -1,11 +1,7 @@
-import { TinyEmitter as Emitter } from 'tiny-emitter';
-
 import { Emoji } from './emoji';
 import { createElement } from './util';
 
 import { HIDE_VARIANT_POPUP } from './events';
-
-import { EmojiRecord, EmojiButtonOptions } from './types';
 
 import {
   CLASS_VARIANT_OVERLAY,
@@ -14,41 +10,36 @@ import {
 } from './classes';
 
 export class VariantPopup {
-  private popup: HTMLElement;
-  private focusedEmojiIndex = 0;
+  focusedEmojiIndex = 0;
 
-  constructor(
-    private events: Emitter,
-    private emoji: EmojiRecord,
-    private options: EmojiButtonOptions
-  ) {}
+  constructor(events, emoji, options) {
+    this.events = events;
+    this.emoji = emoji;
+    this.options = options;
+  }
 
-  getEmoji(index: number): Element {
+  getEmoji(index) {
     return this.popup.querySelectorAll(`.${CLASS_EMOJI}`)[index];
   }
 
-  setFocusedEmoji(newIndex: number): void {
-    const currentFocusedEmoji = this.getEmoji(
-      this.focusedEmojiIndex
-    ) as HTMLElement;
+  setFocusedEmoji(newIndex) {
+    const currentFocusedEmoji = this.getEmoji(this.focusedEmojiIndex);
     currentFocusedEmoji.tabIndex = -1;
 
     this.focusedEmojiIndex = newIndex;
-    const newFocusedEmoji = this.getEmoji(
-      this.focusedEmojiIndex
-    ) as HTMLElement;
+    const newFocusedEmoji = this.getEmoji(this.focusedEmojiIndex);
     newFocusedEmoji.tabIndex = 0;
     newFocusedEmoji.focus();
   }
 
-  render(): HTMLElement {
+  render() {
     this.popup = createElement('div', CLASS_VARIANT_POPUP);
 
     const overlay = createElement('div', CLASS_VARIANT_OVERLAY);
-    overlay.addEventListener('click', (event: MouseEvent) => {
+    overlay.addEventListener('click', event => {
       event.stopPropagation();
 
-      if (!this.popup.contains(event.target as Node)) {
+      if (!this.popup.contains(event.target)) {
         this.events.emit(HIDE_VARIANT_POPUP);
       }
     });
@@ -81,9 +72,7 @@ export class VariantPopup {
       )
     );
 
-    const firstEmoji = this.popup.querySelector(
-      `.${CLASS_EMOJI}`
-    ) as HTMLElement;
+    const firstEmoji = this.popup.querySelector(`.${CLASS_EMOJI}`);
     this.focusedEmojiIndex = 0;
     firstEmoji.tabIndex = 0;
 

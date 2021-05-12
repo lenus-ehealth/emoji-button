@@ -1,4 +1,3 @@
-import { TinyEmitter as Emitter } from 'tiny-emitter';
 import twemoji from 'twemoji';
 
 import { EMOJI, HIDE_PREVIEW, SHOW_PREVIEW } from './events';
@@ -8,21 +7,17 @@ import { createElement } from './util';
 
 import { CLASS_EMOJI, CLASS_CUSTOM_EMOJI } from './classes';
 
-import { EmojiButtonOptions, EmojiRecord } from './types';
-
 export class Emoji {
-  private emojiButton: HTMLElement;
+  constructor(emoji, showVariants, showPreview, events, options, lazy = true) {
+    this.emoji = emoji;
+    this.showVariants = showVariants;
+    this.showPreview = showPreview;
+    this.events = events;
+    this.options = options;
+    this.lazy = lazy;
+  }
 
-  constructor(
-    private emoji: EmojiRecord,
-    private showVariants: boolean,
-    private showPreview: boolean,
-    private events: Emitter,
-    private options: EmojiButtonOptions,
-    private lazy = true
-  ) {}
-
-  render(): HTMLElement {
+  render() {
     this.emojiButton = createElement('button', CLASS_EMOJI);
 
     let content = this.emoji.emoji;
@@ -59,10 +54,10 @@ export class Emoji {
     return this.emojiButton;
   }
 
-  onEmojiClick(): void {
+  onEmojiClick() {
     // TODO move this side effect out of Emoji, make the recent module listen for event
     if (
-      (!(this.emoji as EmojiRecord).variations ||
+      (!this.emoji.variations ||
         !this.showVariants ||
         !this.options.showVariants) &&
       this.options.showRecents
@@ -77,13 +72,13 @@ export class Emoji {
     });
   }
 
-  onEmojiHover(): void {
+  onEmojiHover() {
     if (this.showPreview) {
       this.events.emit(SHOW_PREVIEW, this.emoji);
     }
   }
 
-  onEmojiLeave(): void {
+  onEmojiLeave() {
     if (this.showPreview) {
       this.events.emit(HIDE_PREVIEW);
     }

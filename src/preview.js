@@ -1,10 +1,7 @@
-import { TinyEmitter as Emitter } from 'tiny-emitter';
-
 import twemoji from 'twemoji';
 
 import { SHOW_PREVIEW, HIDE_PREVIEW } from './events';
 import { createElement } from './util';
-import { EmojiRecord, EmojiButtonOptions } from './types';
 
 import {
   CLASS_PREVIEW,
@@ -14,12 +11,12 @@ import {
 } from './classes';
 
 export class EmojiPreview {
-  private emoji: HTMLElement;
-  private name: HTMLElement;
+  constructor(events, options) {
+    this.events = events;
+    this.options = options;
+  }
 
-  constructor(private events: Emitter, private options: EmojiButtonOptions) {}
-
-  render(): HTMLElement {
+  render() {
     const preview = createElement('div', CLASS_PREVIEW);
 
     this.emoji = createElement('div', CLASS_PREVIEW_EMOJI);
@@ -28,15 +25,13 @@ export class EmojiPreview {
     this.name = createElement('div', CLASS_PREVIEW_NAME);
     preview.appendChild(this.name);
 
-    this.events.on(SHOW_PREVIEW, (emoji: EmojiRecord) =>
-      this.showPreview(emoji)
-    );
+    this.events.on(SHOW_PREVIEW, emoji => this.showPreview(emoji));
     this.events.on(HIDE_PREVIEW, () => this.hidePreview());
 
     return preview;
   }
 
-  showPreview(emoji: EmojiRecord): void {
+  showPreview(emoji) {
     let content = emoji.emoji;
 
     if (emoji.custom) {
@@ -49,7 +44,7 @@ export class EmojiPreview {
     this.name.innerHTML = emoji.name;
   }
 
-  hidePreview(): void {
+  hidePreview() {
     this.emoji.innerHTML = '';
     this.name.innerHTML = '';
   }

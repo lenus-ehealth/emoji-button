@@ -1,5 +1,3 @@
-import { TinyEmitter as Emitter } from 'tiny-emitter';
-
 import { CLASS_CATEGORY_BUTTONS, CLASS_CATEGORY_BUTTON } from './classes';
 
 import emojiData from './data/emoji';
@@ -9,9 +7,7 @@ import { CATEGORY_CLICKED } from './events';
 import * as icons from './icons';
 import { createElement } from './util';
 
-import { EmojiButtonOptions, I18NCategory, I18NStrings } from './types';
-
-const categoryIcons: { [key in I18NCategory]: string } = {
+const categoryIcons = {
   recents: icons.history,
   smileys: icons.smile,
   people: icons.user,
@@ -26,17 +22,17 @@ const categoryIcons: { [key in I18NCategory]: string } = {
 };
 
 export class CategoryButtons {
-  constructor(
-    private options: EmojiButtonOptions,
-    private events: Emitter,
-    private i18n: I18NStrings
-  ) {}
+  constructor(options, events, i18n) {
+    this.options = options;
+    this.events = events;
+    this.i18n = i18n;
+  }
 
   activeButton = 0;
 
-  buttons: HTMLElement[] = [];
+  buttons = [];
 
-  render(): HTMLElement {
+  render() {
     const container = createElement('div', CLASS_CATEGORY_BUTTONS);
 
     const categoryData =
@@ -52,7 +48,7 @@ export class CategoryButtons {
       categories = [...categories, 'custom'];
     }
 
-    categories.forEach((category: string) => {
+    categories.forEach(category => {
       const button = createElement('button', CLASS_CATEGORY_BUTTON);
 
       if (
@@ -105,7 +101,7 @@ export class CategoryButtons {
     return container;
   }
 
-  setActiveButton(activeButton: number, focus = true): void {
+  setActiveButton(activeButton, focus = true) {
     let activeButtonEl = this.buttons[this.activeButton];
     activeButtonEl.classList.remove('active');
     activeButtonEl.tabIndex = -1;

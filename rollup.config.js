@@ -8,7 +8,7 @@ import { terser } from 'rollup-plugin-terser';
 const production = process.env.NODE_ENV === 'production';
 
 export default {
-  input: 'src/index.ts',
+  input: 'src/index.js',
   output: {
     file: 'dist/index.js',
     format: 'es',

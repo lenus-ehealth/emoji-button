@@ -1,9 +1,4 @@
-import { EmojiData, EmojiRecord } from './types';
-
-export function createElement(
-  tagName: string,
-  className?: string
-): HTMLElement {
+export function createElement(tagName, className) {
   const element = document.createElement(tagName);
 
   if (className) {
@@ -13,22 +8,20 @@ export function createElement(
   return element;
 }
 
-export function empty(element: HTMLElement): void {
+export function empty(element) {
   while (element.firstChild) {
     element.removeChild(element.firstChild);
   }
 }
 
-export function formatEmojiName(name: string): string {
+export function formatEmojiName(name) {
   const words = name.split(/[-_]/);
   words[0] = words[0][0].toUpperCase() + words[0].slice(1);
 
   return words.join(' ');
 }
 
-export function buildEmojiCategoryData(
-  emojiData: EmojiData
-): { [key: string]: EmojiRecord[] } {
+export function buildEmojiCategoryData(emojiData) {
   const emojiCategories = {};
 
   emojiData.emoji.forEach(emoji => {
