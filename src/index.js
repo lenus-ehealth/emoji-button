@@ -75,26 +75,11 @@ const DEFAULT_OPTIONS = {
 };
 
 export class EmojiButton {
-  pickerVisible;
-  hideInProgress;
-  events = new Emitter();
-  publicEvents = new Emitter();
-  options;
-  i18n;
-  pickerEl;
-  pickerContent;
-  wrapper;
-  focusTrap;
-  emojiArea;
-  search;
-  overlay;
-  popper;
-  observer;
-  theme;
-  emojiCategories;
-
   constructor(options = {}) {
     this.pickerVisible = false;
+
+    this.events = new Emitter();
+    this.publicEvents = new Emitter();
 
     this.options = { ...DEFAULT_OPTIONS, ...options };
     if (!this.options.rootElement) {
@@ -109,11 +94,9 @@ export class EmojiButton {
     this.onDocumentClick = this.onDocumentClick.bind(this);
     this.onDocumentKeydown = this.onDocumentKeydown.bind(this);
 
-    this.theme = this.options.theme || 'light';
+    this.theme = this.options.theme;
 
-    this.emojiCategories = buildEmojiCategoryData(
-      this.options.emojiData || emojiData
-    );
+    this.emojiCategories = buildEmojiCategoryData(this.options.emojiData);
 
     this.buildPicker();
   }
@@ -281,9 +264,9 @@ export class EmojiButton {
         this.events,
         this.i18n,
         this.options,
-        this.options.emojiData?.emoji || emojiData.emoji,
+        this.options.emojiData?.emoji,
         (this.options.categories || []).map(category =>
-          (this.options.emojiData || emojiData).categories.indexOf(category)
+          this.options.emojiData.categories.indexOf(category)
         )
       );
 
@@ -479,15 +462,14 @@ export class EmojiButton {
 
     if (this.options.rootElement) {
       this.options.rootElement.removeChild(this.wrapper);
-
-      this.popper && this.popper.destroy();
+      this.popper?.destroy();
     }
 
-    this.observer && this.observer.disconnect();
+    this.observer?.disconnect();
 
     if (this.options.plugins) {
       this.options.plugins.forEach(plugin => {
-        plugin.destroy && plugin.destroy();
+        plugin?.destroy();
       });
     }
   }
@@ -533,7 +515,7 @@ export class EmojiButton {
         this.events.emit(HIDE_VARIANT_POPUP);
 
         this.hideInProgress = false;
-        this.popper && this.popper.destroy();
+        this.popper?.destroy();
 
         this.publicEvents.emit(PICKER_HIDDEN);
       },
@@ -646,8 +628,8 @@ export class EmojiButton {
   showMobileView() {
     const style = window.getComputedStyle(this.pickerEl);
     const htmlEl = document.querySelector('html');
-    const viewportHeight = htmlEl && htmlEl.clientHeight;
-    const viewportWidth = htmlEl && htmlEl.clientWidth;
+    const viewportHeight = htmlEl?.clientHeight;
+    const viewportWidth = htmlEl?.clientWidth;
 
     const height = parseInt(style.height);
     const newTop = viewportHeight ? viewportHeight / 2 - height / 2 : 0;

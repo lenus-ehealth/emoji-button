@@ -32,25 +32,17 @@ const categorySortOrder = [
 ];
 
 export class EmojiArea {
-  headerOffsets;
-  currentCategory = 0;
-  headers = [];
-  categoryButtons;
-  emojisPerRow;
-  categories;
-
-  focusedIndex = 0;
-
-  container;
-  emojis;
-
   constructor(events, i18n, options, emojiCategories) {
     this.events = events;
     this.i18n = i18n;
     this.options = options;
     this.emojiCategories = emojiCategories;
 
-    this.emojisPerRow = options.emojisPerRow || 8;
+    this.headers = [];
+    this.focusedIndex = 0;
+    this.currentCategory = 0;
+
+    this.emojisPerRow = options.emojisPerRowl;
     this.categories =
       options.emojiData?.categories ||
       options.categories ||
@@ -145,9 +137,9 @@ export class EmojiArea {
       header => header.offsetTop
     );
 
-    this.selectCategory(this.options.initialCategory || 'smileys', false);
+    this.selectCategory(this.options.initialCategory, false);
     this.currentCategory = this.categories.indexOf(
-      this.options.initialCategory || 'smileys'
+      this.options.initialCategory
     );
 
     if (this.options.showCategoryButtons) {

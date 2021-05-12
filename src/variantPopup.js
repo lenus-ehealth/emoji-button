@@ -10,12 +10,12 @@ import {
 } from './classes';
 
 export class VariantPopup {
-  focusedEmojiIndex = 0;
-
   constructor(events, emoji, options) {
     this.events = events;
     this.emoji = emoji;
     this.options = options;
+
+    this.focusedEmojiIndex = 0;
   }
 
   getEmoji(index) {
