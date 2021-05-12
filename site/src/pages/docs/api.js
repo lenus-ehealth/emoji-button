@@ -183,7 +183,7 @@ export default function ApiDocs() {
               </th>
               <td>string</td>
               <td>
-                <code>'12.1'</code>
+                <code>'13.0'</code>
               </td>
               <td>
                 The version of the Emoji specification to use. This determines
@@ -212,6 +212,9 @@ export default function ApiDocs() {
                   </li>
                   <li>
                     <code>'12.1'</code>
+                  </li>
+                  <li>
+                    <code>'13.0'</code>
                   </li>
                 </ul>
               </td>

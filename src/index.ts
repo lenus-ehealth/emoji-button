@@ -58,7 +58,7 @@ const DEFAULT_OPTIONS: EmojiButtonOptions = {
   showCategoryButtons: true,
   recentsCount: 50,
   emojiData,
-  emojiVersion: '12.1',
+  emojiVersion: '13.0',
   theme: 'light',
   categories: [
     'smileys',
