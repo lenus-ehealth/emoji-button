@@ -32,11 +32,13 @@ const categorySortOrder = [
 ];
 
 export class EmojiArea {
-  constructor(events, i18n, options, emojiCategories) {
+  constructor(events, renderer, i18n, options, emojiCategories) {
     this.events = events;
     this.i18n = i18n;
     this.options = options;
     this.emojiCategories = emojiCategories;
+
+    this.renderer = renderer;
 
     this.headers = [];
     this.focusedIndex = 0;
@@ -71,6 +73,7 @@ export class EmojiArea {
         recentsContainer.parentNode.replaceChild(
           new EmojiContainer(
             this.emojiCategories.recents,
+            this.renderer,
             true,
             this.events,
             this.options,
@@ -285,6 +288,7 @@ export class EmojiArea {
     this.emojis.appendChild(
       new EmojiContainer(
         emojis,
+        this.renderer,
         true,
         this.events,
         this.options,

@@ -48,11 +48,13 @@ class NotFoundMessage {
 }
 
 export class Search {
-  constructor(events, i18n, options, emojiData, categories) {
+  constructor(events, renderer, i18n, options, emojiData, categories) {
     this.events = events;
     this.i18n = i18n;
     this.options = options;
     this.emojisPerRow = this.options.emojisPerRow;
+
+    this.renderer = renderer;
 
     this.focusedEmojiIndex = 0;
 
@@ -222,6 +224,7 @@ export class Search {
       if (searchResults.length) {
         this.resultsContainer = new EmojiContainer(
           searchResults,
+          this.renderer,
           true,
           this.events,
           this.options,

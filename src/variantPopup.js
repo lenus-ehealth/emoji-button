@@ -10,8 +10,9 @@ import {
 } from './classes';
 
 export class VariantPopup {
-  constructor(events, emoji, options) {
+  constructor(events, renderer, emoji, options) {
     this.events = events;
+    this.renderer = renderer;
     this.emoji = emoji;
     this.options = options;
 
@@ -47,6 +48,7 @@ export class VariantPopup {
     this.popup.appendChild(
       new Emoji(
         this.emoji,
+        this.renderer,
         false,
         false,
         this.events,
@@ -63,6 +65,7 @@ export class VariantPopup {
             emoji: variation,
             key: this.emoji.name + index
           },
+          this.renderer,
           false,
           false,
           this.events,

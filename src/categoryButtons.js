@@ -26,11 +26,10 @@ export class CategoryButtons {
     this.options = options;
     this.events = events;
     this.i18n = i18n;
+
+    this.activeButton = 0;
+    this.buttons = [];
   }
-
-  activeButton = 0;
-
-  buttons = [];
 
   render() {
     const container = createElement('div', CLASS_CATEGORY_BUTTONS);

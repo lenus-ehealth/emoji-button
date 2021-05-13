@@ -1,15 +1,21 @@
-import twemoji from 'twemoji';
-
 import { EMOJI, HIDE_PREVIEW, SHOW_PREVIEW } from './events';
-import { smile } from './icons';
 import { save } from './recent';
 import { createElement } from './util';
 
-import { CLASS_EMOJI, CLASS_CUSTOM_EMOJI } from './classes';
+import { CLASS_EMOJI } from './classes';
 
 export class Emoji {
-  constructor(emoji, showVariants, showPreview, events, options, lazy = true) {
+  constructor(
+    emoji,
+    renderer,
+    showVariants,
+    showPreview,
+    events,
+    options,
+    lazy = true
+  ) {
     this.emoji = emoji;
+    this.renderer = renderer;
     this.showVariants = showVariants;
     this.showPreview = showPreview;
     this.events = events;
@@ -20,17 +26,11 @@ export class Emoji {
   render() {
     this.emojiButton = createElement('button', CLASS_EMOJI);
 
-    let content = this.emoji.emoji;
-
-    if (this.emoji.custom) {
-      content = this.lazy
-        ? smile
-        : `<img class="${CLASS_CUSTOM_EMOJI}" src="${this.emoji.emoji}">`;
-    } else if (this.options.style === 'twemoji') {
-      content = this.lazy
-        ? smile
-        : twemoji.parse(this.emoji.emoji, this.options.twemojiOptions);
-    }
+    const content = this.renderer.render(
+      this.emoji,
+      this.lazy,
+      this.options.twemojiOptions
+    );
 
     this.emojiButton.innerHTML = content;
     this.emojiButton.tabIndex = -1;

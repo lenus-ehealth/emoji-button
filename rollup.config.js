@@ -1,5 +1,6 @@
 import babel from '@rollup/plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
+import eslint from '@rollup/plugin-eslint';
 import postcss from 'rollup-plugin-postcss';
 import resolve from 'rollup-plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
@@ -10,9 +11,11 @@ const production = process.env.NODE_ENV === 'production';
 export default {
   input: 'src/index.js',
   output: {
-    file: 'dist/index.js',
+    chunkFileNames: '[name].js',
+    dir: 'dist',
     format: 'es',
-    name: 'EmojiButton'
+    name: 'EmojiButton',
+    sourcemap: true
   },
   watch: {
     buildDelay: 500
@@ -27,7 +30,8 @@ export default {
     postcss({
       extensions: ['.css']
     }),
-    babel({ babelHelpers: 'bundled', compact: true }),
+    eslint(),
+    babel({ babelHelpers: 'bundled' }),
     resolve(),
     commonjs(),
     production && terser()

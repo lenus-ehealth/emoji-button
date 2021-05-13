@@ -3,7 +3,6 @@ import '../css/emoji-button.css';
 import createFocusTrap from 'focus-trap';
 import { TinyEmitter as Emitter } from 'tiny-emitter';
 import { createPopper } from '@popperjs/core';
-import twemoji from 'twemoji';
 
 import emojiData from './data/emoji';
 
@@ -14,11 +13,12 @@ import {
   HIDE_VARIANT_POPUP,
   PICKER_HIDDEN
 } from './events';
-import { lazyLoadEmoji } from './lazyLoad';
 import { EmojiPreview } from './preview';
 import { Search } from './search';
 import { createElement, empty, buildEmojiCategoryData } from './util';
 import { VariantPopup } from './variantPopup';
+
+import lazyLoad from './lazyLoad';
 
 import { i18n } from './i18n';
 
@@ -74,6 +74,14 @@ const DEFAULT_OPTIONS = {
   initialCategory: 'smileys'
 };
 
+// REFACTOR TODO:
+//
+// 1. Change `style` to `renderer`
+// 2. Change `twemojiOptions` to generic `rendererOptions`
+// 3. Enforce renderer of 'native' or 'twemoji' - throw error otherwise. Right now it just falls through to native.
+// 4. Look into using basic Mustache templating?
+// 5. OR, clean up class selection/element creation
+
 export class EmojiButton {
   constructor(options = {}) {
     this.pickerVisible = false;
@@ -98,7 +106,15 @@ export class EmojiButton {
 
     this.emojiCategories = buildEmojiCategoryData(this.options.emojiData);
 
-    this.buildPicker();
+    if (options.style === STYLE_TWEMOJI) {
+      import('./renderers/twemoji').then(renderer => {
+        this.buildPicker(renderer);
+      });
+    } else {
+      import('./renderers/native').then(renderer => {
+        this.buildPicker(renderer);
+      });
+    }
   }
 
   /**
@@ -187,72 +203,18 @@ export class EmojiButton {
    * Emits a selected emoji event.
    * @param param0 The selected emoji and show variants flag
    */
-  async emitEmoji({ emoji, showVariants }) {
+  emitEmoji({ emoji, showVariants }) {
     if (emoji.variations && showVariants && this.options.showVariants) {
       this.showVariantPopup(emoji);
     } else {
       setTimeout(() => this.emojiArea.updateRecents());
 
-      let eventData;
-      if (emoji.custom) {
-        eventData = this.emitCustomEmoji(emoji);
-      } else if (this.options.style === STYLE_TWEMOJI) {
-        eventData = await this.emitTwemoji(emoji);
-      } else {
-        eventData = this.emitNativeEmoji(emoji);
-      }
-
-      this.publicEvents.emit(EMOJI, eventData);
+      this.publicEvents.emit(EMOJI, this.renderer.emit(emoji));
 
       if (this.options.autoHide) {
         this.hidePicker();
       }
     }
-  }
-
-  /**
-   * Emits a native emoji record.
-   * @param emoji The selected emoji
-   */
-  emitNativeEmoji(emoji) {
-    return {
-      emoji: emoji.emoji,
-      name: emoji.name
-    };
-  }
-
-  /**
-   * Emits a custom emoji record.
-   * @param emoji The selected emoji
-   */
-  emitCustomEmoji(emoji) {
-    return {
-      url: emoji.emoji,
-      name: emoji.name,
-      custom: true
-    };
-  }
-
-  /**
-   * Emits a Twemoji emoji record.
-   * @param emoji The selected emoji
-   */
-  emitTwemoji(emoji) {
-    return new Promise(resolve => {
-      twemoji.parse(emoji.emoji, {
-        ...this.options.twemojiOptions,
-        callback: (icon, { base, size, ext }) => {
-          const imageUrl = `${base}${size}/${icon}${ext}`;
-          resolve({
-            url: imageUrl,
-            emoji: emoji.emoji,
-            name: emoji.name
-          });
-
-          return imageUrl;
-        }
-      });
-    });
   }
 
   /**
@@ -262,6 +224,7 @@ export class EmojiButton {
     if (this.options.showSearch) {
       this.search = new Search(
         this.events,
+        this.renderer,
         this.i18n,
         this.options,
         this.options.emojiData?.emoji,
@@ -280,7 +243,7 @@ export class EmojiButton {
   buildPreview() {
     if (this.options.showPreview) {
       this.pickerEl.appendChild(
-        new EmojiPreview(this.events, this.options).render()
+        new EmojiPreview(this.events, this.renderer, this.options).render()
       );
     }
   }
@@ -321,7 +284,9 @@ export class EmojiButton {
   /**
    * Builds the emoji picker.
    */
-  buildPicker() {
+  buildPicker(renderer) {
+    this.renderer = renderer;
+
     this.pickerEl = createElement('div', CLASS_PICKER);
     this.pickerEl.classList.add(this.theme);
 
@@ -337,6 +302,7 @@ export class EmojiButton {
 
     this.emojiArea = new EmojiArea(
       this.events,
+      this.renderer,
       this.i18n,
       this.options,
       this.emojiCategories
@@ -372,6 +338,7 @@ export class EmojiButton {
   showVariantPopup(emoji) {
     const variantPopup = new VariantPopup(
       this.events,
+      this.renderer,
       emoji,
       this.options
     ).render();
@@ -424,7 +391,7 @@ export class EmojiButton {
       .call(entries, entry => entry.intersectionRatio > 0)
       .map(entry => entry.target)
       .forEach(element => {
-        lazyLoadEmoji(element, this.options);
+        lazyLoad(element, this.renderer, this.options.twemojiOptions);
       });
   }
 

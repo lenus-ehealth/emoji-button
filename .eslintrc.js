@@ -1,11 +1,12 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
+  parser: '@babel/eslint-parser',
   env: {
     browser: true,
     es6: true,
     node: true,
     jest: true
   },
+  ignorePatterns: ['src/data/*.js'],
   extends: ['eslint:recommended', 'plugin:prettier/recommended'],
   globals: {
     Atomics: 'readonly',
@@ -17,6 +18,5 @@ module.exports = {
   },
   rules: {
     'no-console': 'error'
-  },
-  plugins: ['@typescript-eslint']
+  }
 };

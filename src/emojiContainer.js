@@ -4,11 +4,12 @@ import { createElement } from './util';
 import { CLASS_EMOJI_CONTAINER } from './classes';
 
 export class EmojiContainer {
-  constructor(emojis, showVariants, events, options, lazy = true) {
+  constructor(emojis, renderer, showVariants, events, options, lazy = true) {
     this.showVariants = showVariants;
     this.events = events;
     this.options = options;
     this.lazy = lazy;
+    this.renderer = renderer;
 
     this.emojis = emojis.filter(
       e =>
@@ -22,6 +23,7 @@ export class EmojiContainer {
       emojiContainer.appendChild(
         new Emoji(
           emoji,
+          this.renderer,
           this.showVariants,
           true,
           this.events,

@@ -1,18 +1,16 @@
-import twemoji from 'twemoji';
-
 import { SHOW_PREVIEW, HIDE_PREVIEW } from './events';
 import { createElement } from './util';
 
 import {
   CLASS_PREVIEW,
   CLASS_PREVIEW_EMOJI,
-  CLASS_PREVIEW_NAME,
-  CLASS_CUSTOM_EMOJI
+  CLASS_PREVIEW_NAME
 } from './classes';
 
 export class EmojiPreview {
-  constructor(events, options) {
+  constructor(events, renderer, options) {
     this.events = events;
+    this.renderer = renderer;
     this.options = options;
   }
 
@@ -32,15 +30,12 @@ export class EmojiPreview {
   }
 
   showPreview(emoji) {
-    let content = emoji.emoji;
+    this.emoji.innerHTML = this.renderer.render(
+      emoji,
+      false,
+      this.options.twemojiOptions
+    );
 
-    if (emoji.custom) {
-      content = `<img class="${CLASS_CUSTOM_EMOJI}" src="${emoji.emoji}">`;
-    } else if (this.options.style === 'twemoji') {
-      content = twemoji.parse(emoji.emoji, this.options.twemojiOptions);
-    }
-
-    this.emoji.innerHTML = content;
     this.name.innerHTML = emoji.name;
   }
 
