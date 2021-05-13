@@ -192,7 +192,7 @@
 
 .emoji-picker__container {
   display: grid;
-  justify-content: center;
+  justify-content: space-between;
   grid-template-columns: repeat(var(--emoji-per-row), calc(var(--emoji-size) * var(--emoji-size-multiplier)));
   grid-auto-rows: calc(var(--emoji-size) * var(--emoji-size-multiplier));
 }
