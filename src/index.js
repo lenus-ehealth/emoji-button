@@ -76,11 +76,23 @@ const DEFAULT_OPTIONS = {
 
 // REFACTOR TODO:
 //
+// 0. FIX BROKEN TESTS!
 // 1. Change `style` to `renderer`
 // 2. Change `twemojiOptions` to generic `rendererOptions`
 // 3. Enforce renderer of 'native' or 'twemoji' - throw error otherwise. Right now it just falls through to native.
 // 4. Look into using basic Mustache templating?
 // 5. OR, clean up class selection/element creation
+//
+// IDEAS:
+//
+// 1. React component/hook for using Emoji Button?
+// 2. Separate twemoji and native renderers into separate packages?
+// @emoji-button/core, @emoji-button/native, @emoji-button/twemoji?
+//
+// Can also "adopt" i18n package under the @emoji-button umbrella
+// Would need to refactor into a monorepo? Lerna?
+//
+// Drop classes and use objects/factories?
 
 export class EmojiButton {
   constructor(options = {}) {
