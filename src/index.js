@@ -89,6 +89,8 @@ const DEFAULT_OPTIONS = {
 // 2. Separate twemoji and native renderers into separate packages?
 // @emoji-button/core, @emoji-button/native, @emoji-button/twemoji?
 //
+// 3. Go back to emoji-button package name and drop the @joeattardi?
+//
 // Can also "adopt" i18n package under the @emoji-button umbrella
 // Would need to refactor into a monorepo? Lerna?
 //
