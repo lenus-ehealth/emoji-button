@@ -3,8 +3,8 @@
   "private": true,
   "version": "5.0.0",
   "workspaces": [
-    "packages/*",
-    "testbed"
+    "./packages/*",
+    "./testbed"
   ],
   "description": "Vanilla JavaScript emoji picker",
   "keywords": [
