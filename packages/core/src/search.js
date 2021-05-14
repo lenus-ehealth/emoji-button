@@ -1,3 +1,5 @@
+import fuzzysort from 'fuzzysort';
+
 import * as icons from './icons';
 
 import { EmojiContainer } from './emojiContainer';
@@ -17,8 +19,6 @@ import {
   CLASS_NOT_FOUND_ICON,
   CLASS_EMOJI
 } from './classes';
-
-import fuzzysort from 'fuzzysort';
 
 class NotFoundMessage {
   constructor(message, iconUrl) {

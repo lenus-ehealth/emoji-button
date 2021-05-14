@@ -31,7 +31,7 @@ export default {
       extensions: ['.css']
     }),
     eslint(),
-    babel({ babelHelpers: 'bundled' }),
+    babel({ babelHelpers: 'bundled', configFile: '../../babel.config.json' }),
     resolve(),
     commonjs(),
     production && terser()

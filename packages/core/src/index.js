@@ -1,6 +1,6 @@
-import '../css/emoji-button.css';
+// import '../css/emoji-button.css';
 
-import createFocusTrap from 'focus-trap';
+import { createFocusTrap } from 'focus-trap';
 import { TinyEmitter as Emitter } from 'tiny-emitter';
 import { createPopper } from '@popperjs/core';
 
@@ -120,15 +120,17 @@ export class EmojiButton {
 
     this.emojiCategories = buildEmojiCategoryData(this.options.emojiData);
 
-    if (options.style === STYLE_TWEMOJI) {
-      import('./renderers/twemoji').then(renderer => {
-        this.buildPicker(renderer);
-      });
-    } else {
-      import('./renderers/native').then(renderer => {
-        this.buildPicker(renderer);
-      });
-    }
+    this.buildPicker(this.options.renderer);
+
+    // if (options.style === STYLE_TWEMOJI) {
+    //   import('./renderers/twemoji').then(renderer => {
+    //     this.buildPicker(renderer);
+    //   });
+    // } else {
+    //   import('./renderers/native').then(renderer => {
+    //     this.buildPicker(renderer);
+    //   });
+    // }
   }
 
   /**
@@ -217,13 +219,13 @@ export class EmojiButton {
    * Emits a selected emoji event.
    * @param param0 The selected emoji and show variants flag
    */
-  emitEmoji({ emoji, showVariants }) {
+  async emitEmoji({ emoji, showVariants }) {
     if (emoji.variations && showVariants && this.options.showVariants) {
       this.showVariantPopup(emoji);
     } else {
       setTimeout(() => this.emojiArea.updateRecents());
 
-      this.publicEvents.emit(EMOJI, this.renderer.emit(emoji));
+      this.publicEvents.emit(EMOJI, await this.renderer.emit(emoji));
 
       if (this.options.autoHide) {
         this.hidePicker();
