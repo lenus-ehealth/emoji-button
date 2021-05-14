@@ -36,8 +36,6 @@ import { EmojiArea } from './emojiArea';
 
 const MOBILE_BREAKPOINT = 450;
 
-const STYLE_TWEMOJI = 'twemoji';
-
 const DEFAULT_OPTIONS = {
   position: 'auto',
   autoHide: true,
@@ -64,10 +62,6 @@ const DEFAULT_OPTIONS = {
     'flags'
   ],
   style: 'native',
-  twemojiOptions: {
-    ext: '.svg',
-    folder: 'svg'
-  },
   emojisPerRow: 8,
   rows: 6,
   emojiSize: '1.8em',
@@ -407,7 +401,7 @@ export class EmojiButton {
       .call(entries, entry => entry.intersectionRatio > 0)
       .map(entry => entry.target)
       .forEach(element => {
-        lazyLoad(element, this.renderer, this.options.twemojiOptions);
+        lazyLoad(element, this.renderer);
       });
   }
 
@@ -418,9 +412,7 @@ export class EmojiButton {
    * @return true if the emoji should be lazily loaded, false if not.
    */
   shouldLazyLoad(element) {
-    return (
-      this.options.style === STYLE_TWEMOJI || element.dataset.custom === 'true'
-    );
+    return this.renderer.lazyLoad || element.dataset.custom === 'true';
   }
 
   /**

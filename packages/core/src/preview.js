@@ -1,6 +1,8 @@
 import { SHOW_PREVIEW, HIDE_PREVIEW } from './events';
 import { createElement } from './util';
 
+import { render } from './render';
+
 import {
   CLASS_PREVIEW,
   CLASS_PREVIEW_EMOJI,
@@ -30,12 +32,7 @@ export class EmojiPreview {
   }
 
   showPreview(emoji) {
-    this.emoji.innerHTML = this.renderer.render(
-      emoji,
-      false,
-      this.options.twemojiOptions
-    );
-
+    this.emoji.innerHTML = render(emoji, this.renderer);
     this.name.innerHTML = emoji.name;
   }
 

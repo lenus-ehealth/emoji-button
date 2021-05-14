@@ -1,10 +1,11 @@
 import '@emoji-button/core/css/emoji-button.css';
 
 import { EmojiButton } from '@emoji-button/core';
-import * as NativeRenderer from '@emoji-button/renderer-native';
+// import NativeRenderer from '@emoji-button/renderer-native';
+import TwemojiRenderer from '@emoji-button/renderer-twemoji';
 
 const picker = new EmojiButton({
-  renderer: NativeRenderer
+  renderer: new TwemojiRenderer()
 });
 
 const trigger = document.querySelector('.trigger');

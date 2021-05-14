@@ -1,8 +1,8 @@
-import { CLASS_CUSTOM_EMOJI } from '../classes';
+import { CLASS_CUSTOM_EMOJI } from './classes';
 
-import { createElement } from '../util';
+import { createElement } from './util';
 
-import { smile } from '../icons';
+import { smile } from './icons';
 
 export function emit(emoji) {
   return {
@@ -12,13 +12,13 @@ export function emit(emoji) {
   };
 }
 
-export function render(emoji, lazy) {
+export function renderCustom(emoji, lazy) {
   return lazy
     ? smile
     : `<img class="${CLASS_CUSTOM_EMOJI}" src="${emoji.emoji}">`;
 }
 
-export function lazyLoad(element) {
+export function lazyLoadCustom(element) {
   if (element.dataset.emoji) {
     const img = createElement('img', CLASS_CUSTOM_EMOJI);
     img.src = element.dataset.emoji;

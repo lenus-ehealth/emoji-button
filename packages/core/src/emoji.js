@@ -1,6 +1,9 @@
 import { EMOJI, HIDE_PREVIEW, SHOW_PREVIEW } from './events';
 import { save } from './recent';
 import { createElement } from './util';
+import { render } from './render';
+
+import { smile } from './icons';
 
 import { CLASS_EMOJI } from './classes';
 
@@ -26,11 +29,7 @@ export class Emoji {
   render() {
     this.emojiButton = createElement('button', CLASS_EMOJI);
 
-    const content = this.renderer.render(
-      this.emoji,
-      this.lazy,
-      this.options.twemojiOptions
-    );
+    const content = render(this.emoji, this.renderer, this.lazy && smile);
 
     this.emojiButton.innerHTML = content;
     this.emojiButton.tabIndex = -1;
@@ -47,8 +46,8 @@ export class Emoji {
     this.emojiButton.addEventListener('mouseover', () => this.onEmojiHover());
     this.emojiButton.addEventListener('mouseout', () => this.onEmojiLeave());
 
-    if (this.options.style === 'twemoji' && this.lazy) {
-      this.emojiButton.style.opacity = '0.25';
+    if (this.renderer.lazyLoad) {
+      this.emojiButton.style.opacity = '0.1';
     }
 
     return this.emojiButton;
