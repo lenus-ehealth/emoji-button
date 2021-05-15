@@ -1,4 +1,4 @@
-// import '../css/emoji-button.css';
+import pkg from '../package.json';
 
 import { createFocusTrap } from 'focus-trap';
 import { TinyEmitter as Emitter } from 'tiny-emitter';
@@ -71,20 +71,14 @@ const DEFAULT_OPTIONS = {
 // REFACTOR TODO:
 //
 // 0. FIX BROKEN TESTS!
-// 1. Change `style` to `renderer`
-// 2. Change `twemojiOptions` to generic `rendererOptions`
 // 3. Enforce renderer of 'native' or 'twemoji' - throw error otherwise. Right now it just falls through to native.
 // 4. Look into using basic Mustache templating?
 // 5. OR, clean up class selection/element creation
+// 6. Use different CSS imports for themes rather than passing a `theme` option
 //
 // IDEAS:
 //
 // 1. React component/hook for using Emoji Button?
-// 2. Separate twemoji and native renderers into separate packages?
-// @emoji-button/core, @emoji-button/native, @emoji-button/twemoji?
-//
-// 3. Go back to emoji-button package name and drop the @joeattardi?
-//
 // Can also "adopt" i18n package under the @emoji-button umbrella
 // Would need to refactor into a monorepo? Lerna?
 //
@@ -114,17 +108,11 @@ export class EmojiButton {
 
     this.emojiCategories = buildEmojiCategoryData(this.options.emojiData);
 
-    this.buildPicker(this.options.renderer);
+    if (!this.options.renderer) {
+      throw new Error('No Emoji Button renderer was specified');
+    }
 
-    // if (options.style === STYLE_TWEMOJI) {
-    //   import('./renderers/twemoji').then(renderer => {
-    //     this.buildPicker(renderer);
-    //   });
-    // } else {
-    //   import('./renderers/native').then(renderer => {
-    //     this.buildPicker(renderer);
-    //   });
-    // }
+    this.buildPicker(this.options.renderer);
   }
 
   /**
@@ -666,3 +654,5 @@ export class EmojiButton {
     }
   }
 }
+
+EmojiButton.version = pkg.version;

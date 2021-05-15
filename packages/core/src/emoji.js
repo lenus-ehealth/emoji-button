@@ -46,7 +46,7 @@ export class Emoji {
     this.emojiButton.addEventListener('mouseover', () => this.onEmojiHover());
     this.emojiButton.addEventListener('mouseout', () => this.onEmojiLeave());
 
-    if (this.renderer.lazyLoad) {
+    if (this.renderer.lazyLoad && this.lazy) {
       this.emojiButton.style.opacity = '0.1';
     }
 
