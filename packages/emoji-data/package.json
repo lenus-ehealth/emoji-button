@@ -1,0 +1,24 @@
+{
+  "name": "@emoji-button/emoji-data",
+  "description": "Emoji data for Emoji Button",
+  "version": "5.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "node src/index.js"
+  },
+  "keywords": [
+    "emoji"
+  ],
+  "author": "Joe Attardi <jattardi@gmail.com> (https://joeattardi.codes)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joeattardi/emoji-button.git",
+    "directory": "packages/emoji-data"
+  },
+  "homepage": "https://emoji-button.js.org",
+  "bugs": "https://github.com/joeattardi/emoji-button/issues",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ]
+}

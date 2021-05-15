@@ -4,8 +4,6 @@ import { createFocusTrap } from 'focus-trap';
 import { TinyEmitter as Emitter } from 'tiny-emitter';
 import { createPopper } from '@popperjs/core';
 
-import emojiData from './data/emoji';
-
 import {
   EMOJI,
   SHOW_SEARCH_RESULTS,
@@ -47,7 +45,6 @@ const DEFAULT_OPTIONS = {
   showVariants: true,
   showCategoryButtons: true,
   recentsCount: 50,
-  emojiData,
   emojiVersion: '13.0',
   theme: 'light',
   categories: [
@@ -75,6 +72,13 @@ const DEFAULT_OPTIONS = {
 // 4. Look into using basic Mustache templating?
 // 5. OR, clean up class selection/element creation
 // 6. Use different CSS imports for themes rather than passing a `theme` option
+// 
+// look into using https://www.npmjs.com/package/emoji-datasource instead of maintaining our own
+// https://github.com/Armaldio/localize-emoji-db
+// https://github.com/unicode-org/cldr/tree/master/common/annotations
+// https://github.com/unicode-org/cldr/tree/master/common/annotationsDerived
+// https://github.com/roderickhsiao/emoji-button-locale-data
+// Root emoji data test file: https://github.com/unicode-org/cldr/tree/master/tools/cldr-code/src/main/resources/org/unicode/cldr/util/data/emoji
 //
 // IDEAS:
 //

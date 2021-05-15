@@ -1,4 +1,3 @@
-import emojiData from './data/emoji';
 import { i18n as defaultI18n } from './i18n';
 
 import {
@@ -45,10 +44,7 @@ export class EmojiArea {
     this.currentCategory = 0;
 
     this.emojisPerRow = options.emojisPerRowl;
-    this.categories =
-      options.emojiData?.categories ||
-      options.categories ||
-      emojiData.categories;
+    this.categories = options.emojiData?.categories || options.categories;
 
     if (options.showRecents) {
       this.categories = ['recents', ...this.categories];

@@ -1,7 +1,5 @@
 import { CLASS_CATEGORY_BUTTONS, CLASS_CATEGORY_BUTTON } from './classes';
 
-import emojiData from './data/emoji';
-
 import { CATEGORY_CLICKED } from './events';
 
 import * as icons from './icons';
@@ -35,9 +33,7 @@ export class CategoryButtons {
     const container = createElement('div', CLASS_CATEGORY_BUTTONS);
 
     const categoryData =
-      this.options.categories ||
-      this.options.emojiData?.categories ||
-      emojiData.categories;
+      this.options.categories || this.options.emojiData?.categories;
 
     let categories = this.options.showRecents
       ? ['recents', ...categoryData]

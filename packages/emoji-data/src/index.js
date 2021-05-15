@@ -1,20 +1,22 @@
 const fs = require('fs');
+const path = require('path');
 const readline = require('readline');
 
 const DATA_LINE_REGEX = /((?:[0-9A-F]+ ?)+)\s+;(.+)\s+#.+E([0-9.]+) (.+)/;
 const EMOJI_WITH_MODIFIER_REGEX = /([a-z]+): ([a-z -]+)/;
-const EMOJI_WITH_SKIN_TONE_AND_MODIFIER_REGEX = /([a-z]+): ([a-z -]+), ([a-z ]+)/;
+const EMOJI_WITH_SKIN_TONE_AND_MODIFIER_REGEX =
+  /([a-z]+): ([a-z -]+), ([a-z ]+)/;
 
 const categoryKeys = {
   'Smileys & Emotion': 'smileys',
   'People & Body': 'people',
   'Animals & Nature': 'animals',
   'Food & Drink': 'food',
-  'Activities': 'activities',
+  Activities: 'activities',
   'Travel & Places': 'travel',
-  'Objects': 'objects',
-  'Symbols': 'symbols',
-  'Flags': 'flags'
+  Objects: 'objects',
+  Symbols: 'symbols',
+  Flags: 'flags'
 };
 
 const EXCLUDE_LIST = [
@@ -30,12 +32,17 @@ const EXCLUDE_LIST = [
 ];
 
 const MODIFIER_SUBSTITUTIONS = {
-  'bald': 'no hair'
+  bald: 'no hair'
 };
 
-const stream = fs.createReadStream('emoji-test.txt');
+const stream = fs.createReadStream(
+  path.resolve(__dirname, '..', 'data', 'emoji-test.txt')
+);
 
-const interface = readline.createInterface(stream);
+const outputDirectory = path.resolve(__dirname, '..', 'dist');
+const outputFile = path.resolve(outputDirectory, 'index.js');
+
+const readlineInterface = readline.createInterface(stream);
 
 let currentGroup;
 let currentSubgroup;
@@ -46,7 +53,7 @@ const data = {
   emoji: []
 };
 
-interface.on('line', line => {
+readlineInterface.on('line', line => {
   if (line.startsWith('# group:')) {
     currentGroup = line.slice('# group: '.length);
     if (currentGroup !== 'Component') {
@@ -69,40 +76,64 @@ interface.on('line', line => {
 
       if (currentSubgroup === 'person') {
         const modifierMatcher = EMOJI_WITH_MODIFIER_REGEX.exec(name);
-        const skinToneMatcher = EMOJI_WITH_SKIN_TONE_AND_MODIFIER_REGEX.exec(name);
+        const skinToneMatcher =
+          EMOJI_WITH_SKIN_TONE_AND_MODIFIER_REGEX.exec(name);
         if (skinToneMatcher) {
-          name = skinToneMatcher[1] + ' with ' + substituteModifier(skinToneMatcher[3]) + ': ' + skinToneMatcher[2];
+          name =
+            skinToneMatcher[1] +
+            ' with ' +
+            substituteModifier(skinToneMatcher[3]) +
+            ': ' +
+            skinToneMatcher[2];
         } else if (modifierMatcher) {
           if (!modifierMatcher[2].includes('skin tone')) {
-            name = modifierMatcher[1] + ' with ' + substituteModifier(modifierMatcher[2]);
+            name =
+              modifierMatcher[1] +
+              ' with ' +
+              substituteModifier(modifierMatcher[2]);
           }
         }
       }
 
       if (matcher[2].trim() !== 'unqualified') {
-        data.emoji.push({ sequence, emoji, category: categoryIndex, name, variations: [], version });
+        data.emoji.push({
+          sequence,
+          emoji,
+          category: categoryIndex,
+          name,
+          variations: [],
+          version
+        });
       }
     }
   }
 });
 
-interface.on('close', () => {
+readlineInterface.on('close', () => {
   stream.close();
 
   let toDelete = [];
 
-  const emojisWithVariationSelector = data.emoji.filter(emoji => emoji.sequence.includes('FE0F'));
+  const emojisWithVariationSelector = data.emoji.filter(emoji =>
+    emoji.sequence.includes('FE0F')
+  );
   emojisWithVariationSelector.forEach(emoji => {
-    const baseEmoji = data.emoji.find(e => e.sequence === emoji.sequence.replace(' FE0F', ''));
+    const baseEmoji = data.emoji.find(
+      e => e.sequence === emoji.sequence.replace(' FE0F', '')
+    );
     toDelete.push(baseEmoji);
   });
 
   data.emoji = data.emoji.filter(e => !toDelete.includes(e));
   toDelete = [];
 
-  EXCLUDE_LIST.forEach(name => toDelete.push(data.emoji.find(e => e.name === name)));
+  EXCLUDE_LIST.forEach(name =>
+    toDelete.push(data.emoji.find(e => e.name === name))
+  );
 
-  const emojisWithVariations = data.emoji.filter(emoji => emoji.name.includes(':') && !emoji.name.startsWith('family'));
+  const emojisWithVariations = data.emoji.filter(
+    emoji => emoji.name.includes(':') && !emoji.name.startsWith('family')
+  );
   emojisWithVariations.forEach(emoji => {
     const baseName = emoji.name.split(':')[0];
     const baseEmoji = data.emoji.find(e => e.name === baseName);
@@ -121,7 +152,16 @@ interface.on('close', () => {
     }
   });
 
-  fs.writeFileSync('src/data/emoji.js', `export default ${JSON.stringify(data)}`);
+  try {
+    fs.mkdirSync(outputDirectory);
+  } catch (error) {
+    if (error.code !== 'EEXIST') {
+      throw error;
+    }
+  }
+
+  fs.writeFileSync(outputFile, `export default ${JSON.stringify(data)}`);
+  console.log(`Emoji data written to ${outputFile}.`);
 });
 
 function getEmoji(sequence) {
