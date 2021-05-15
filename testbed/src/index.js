@@ -1,19 +1,36 @@
+import './index.css';
 import '@emoji-button/core/css/emoji-button.css';
 
 import { EmojiButton } from '@emoji-button/core';
-// import NativeRenderer from '@emoji-button/renderer-native';
+import NativeRenderer from '@emoji-button/renderer-native';
 import TwemojiRenderer from '@emoji-button/renderer-twemoji';
 
-const picker = new EmojiButton({
-  renderer: new TwemojiRenderer()
-});
+document.querySelector('#version').innerHTML = `v${EmojiButton.version}`;
 
-const trigger = document.querySelector('.trigger');
+function createPicker(button, options, onEmoji) {
+  const picker = new EmojiButton(options);
+  picker.on('emoji', onEmoji);
+  button.addEventListener('click', () => picker.togglePicker(button));
+}
 
-picker.on('emoji', emoji => {
-  console.log(emoji);
-});
+const native = document.querySelector('#native .emoji-button');
+createPicker(
+  native,
+  {
+    renderer: new NativeRenderer()
+  },
+  ({ emoji }) => {
+    native.innerHTML = emoji;
+  }
+);
 
-trigger.addEventListener('click', () => {
-  picker.togglePicker(trigger);
-});
+const twemoji = document.querySelector('#twemoji .emoji-button');
+createPicker(
+  twemoji,
+  {
+    renderer: new TwemojiRenderer()
+  },
+  ({ url }) => {
+    twemoji.innerHTML = `<img src="${url}" />`;
+  }
+);
