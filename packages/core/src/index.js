@@ -1,7 +1,7 @@
 import pkg from '../package.json';
 
 import { createFocusTrap } from 'focus-trap';
-import { TinyEmitter as Emitter } from 'tiny-emitter';
+import Events from './events';
 import { createPopper } from '@popperjs/core';
 
 import {
@@ -72,7 +72,7 @@ const DEFAULT_OPTIONS = {
 // 4. Look into using basic Mustache templating?
 // 5. OR, clean up class selection/element creation
 // 6. Use different CSS imports for themes rather than passing a `theme` option
-// 
+//
 // look into using https://www.npmjs.com/package/emoji-datasource instead of maintaining our own
 // https://github.com/Armaldio/localize-emoji-db
 // https://github.com/unicode-org/cldr/tree/master/common/annotations
@@ -92,8 +92,8 @@ export class EmojiButton {
   constructor(options = {}) {
     this.pickerVisible = false;
 
-    this.events = new Emitter();
-    this.publicEvents = new Emitter();
+    this.events = new Events();
+    this.publicEvents = new Events();
 
     this.options = { ...DEFAULT_OPTIONS, ...options };
     if (!this.options.rootElement) {
@@ -311,9 +311,14 @@ export class EmojiButton {
     );
     this.pickerContent.appendChild(this.emojiArea.render());
 
-    this.events.on(SHOW_SEARCH_RESULTS, this.showSearchResults.bind(this));
-    this.events.on(HIDE_SEARCH_RESULTS, this.hideSearchResults.bind(this));
-    this.events.on(EMOJI, this.emitEmoji.bind(this));
+    this.cleanupEvents = this.events.bindEvents(
+      {
+        [SHOW_SEARCH_RESULTS]: this.showSearchResults,
+        [HIDE_SEARCH_RESULTS]: this.hideSearchResults,
+        [EMOJI]: this.emitEmoji
+      },
+      this
+    );
 
     this.buildPreview();
 
@@ -349,15 +354,13 @@ export class EmojiButton {
       this.pickerEl.appendChild(variantPopup);
     }
 
-    this.events.on(HIDE_VARIANT_POPUP, () => {
+    this.events.once(HIDE_VARIANT_POPUP, () => {
       if (variantPopup) {
         variantPopup.classList.add('hiding');
         setTimeout(() => {
           variantPopup && this.pickerEl.removeChild(variantPopup);
         }, 175);
       }
-
-      this.events.off(HIDE_VARIANT_POPUP);
     });
   }
 
@@ -427,6 +430,8 @@ export class EmojiButton {
     this.events.off(EMOJI);
     this.events.off(HIDE_VARIANT_POPUP);
 
+    this.cleanupEvents();
+
     if (this.options.rootElement) {
       this.options.rootElement.removeChild(this.wrapper);
       this.popper?.destroy();
@@ -439,6 +444,8 @@ export class EmojiButton {
         plugin?.destroy();
       });
     }
+
+    this.events.destroy();
   }
 
   /**

@@ -1,4 +1,4 @@
-import { TinyEmitter as Emitter } from 'tiny-emitter';
+import { Emitter } from './events';
 
 import { EMOJI, HIDE_PREVIEW, SHOW_PREVIEW } from './events';
 import { Emoji } from './emoji';

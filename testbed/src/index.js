@@ -10,7 +10,10 @@ document.querySelector('#version').innerHTML = `v${EmojiButton.version}`;
 
 function createPicker(button, options, onEmoji) {
   const picker = new EmojiButton(options);
-  picker.on('emoji', onEmoji);
+  picker.on('emoji', data => {
+    onEmoji(data);
+    picker.destroyPicker();
+  });
   button.addEventListener('click', () => picker.togglePicker(button));
 }
 

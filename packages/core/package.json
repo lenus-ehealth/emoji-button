@@ -26,7 +26,6 @@
   "dependencies": {
     "@popperjs/core": "^2.9.2",
     "focus-trap": "^6.4.0",
-    "fuzzysort": "^1.1.4",
-    "tiny-emitter": "^2.1.0"
+    "fuzzysort": "^1.1.4"
   }
 }

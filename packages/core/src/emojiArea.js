@@ -13,7 +13,7 @@ import { EmojiContainer } from './emojiContainer';
 
 import { CATEGORY_CLICKED } from './events';
 
-import { createElement } from './util';
+import { createElement, bindMethods } from './util';
 import { load } from './recent';
 
 const categorySortOrder = [
@@ -45,6 +45,8 @@ export class EmojiArea {
 
     this.emojisPerRow = options.emojisPerRowl;
     this.categories = options.emojiData?.categories || options.categories;
+
+    bindMethods(this, ['highlightCategory']);
 
     if (options.showRecents) {
       this.categories = ['recents', ...this.categories];
@@ -110,6 +112,7 @@ export class EmojiArea {
       this.addCategory(category, this.emojiCategories[category])
     );
 
+    // TODO investigate this double setTimeout
     requestAnimationFrame(() => {
       setTimeout(() => {
         setTimeout(() =>
@@ -120,7 +123,7 @@ export class EmojiArea {
 
     this.emojis.addEventListener('keydown', this.handleKeyDown);
 
-    this.events.on(CATEGORY_CLICKED, this.selectCategory);
+    this.events.on(CATEGORY_CLICKED, this.selectCategory, this);
 
     this.container.appendChild(this.emojis);
 
@@ -293,7 +296,7 @@ export class EmojiArea {
     );
   };
 
-  selectCategory = (category, focus = true) => {
+  selectCategory(category, focus = true) {
     this.emojis.removeEventListener('scroll', this.highlightCategory);
     if (this.focusedEmoji) {
       this.focusedEmoji.tabIndex = -1;
@@ -311,9 +314,9 @@ export class EmojiArea {
     requestAnimationFrame(() =>
       this.emojis.addEventListener('scroll', this.highlightCategory)
     );
-  };
+  }
 
-  highlightCategory = () => {
+  highlightCategory() {
     if (document.activeElement?.classList.contains('emoji-picker__emoji')) {
       return;
     }
@@ -343,5 +346,5 @@ export class EmojiArea {
     if (this.options.showCategoryButtons) {
       this.categoryButtons.setActiveButton(this.currentCategory);
     }
-  };
+  }
 }

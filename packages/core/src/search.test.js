@@ -1,4 +1,4 @@
-import { TinyEmitter as Emitter } from 'tiny-emitter';
+import { Emitter } from './events';
 
 import { SHOW_SEARCH_RESULTS } from './events';
 import { Search } from './search';

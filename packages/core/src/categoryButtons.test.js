@@ -1,4 +1,4 @@
-import { TinyEmitter as Emitter } from 'tiny-emitter';
+import { Emitter } from './events';
 
 import emojiData from './data/emoji';
 
