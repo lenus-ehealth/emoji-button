@@ -7,12 +7,12 @@ import { createElement } from './util';
 
 const categoryIcons = {
   recents: icons.history,
-  smileys: icons.smile,
-  people: icons.user,
-  animals: icons.cat,
-  food: icons.coffee,
+  'smileys-emotion': icons.smile,
+  'people-body': icons.user,
+  'animals-nature': icons.cat,
+  'food-drink': icons.coffee,
   activities: icons.futbol,
-  travel: icons.building,
+  'travel-places': icons.building,
   objects: icons.lightbulb,
   symbols: icons.music,
   flags: icons.flag,
@@ -55,7 +55,7 @@ export class CategoryButtons {
           icons.createIcon(this.options.icons.categories[category])
         );
       } else {
-        button.innerHTML = categoryIcons[category];
+        button.innerHTML = categoryIcons[category] || icons.smile;
       }
 
       button.tabIndex = -1;

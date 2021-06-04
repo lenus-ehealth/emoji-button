@@ -44,7 +44,7 @@ export class EmojiArea {
     this.currentCategory = 0;
 
     this.emojisPerRow = options.emojisPerRowl;
-    this.categories = options.emojiData?.categories || options.categories;
+    this.categories = options.categoryData.map(category => category.key);
 
     bindMethods(this, ['highlightCategory']);
 
@@ -108,9 +108,9 @@ export class EmojiArea {
       }));
     }
 
-    this.categories.forEach(category =>
-      this.addCategory(category, this.emojiCategories[category])
-    );
+    this.categories.forEach(category => {
+      this.addCategory(category, this.emojiCategories[category]);
+    });
 
     // TODO investigate this double setTimeout
     requestAnimationFrame(() => {
@@ -279,8 +279,10 @@ export class EmojiArea {
 
   addCategory = (category, emojis) => {
     const name = createElement('h2', CLASS_CATEGORY_NAME);
-    name.innerHTML =
-      this.i18n.categories[category] || defaultI18n.categories[category];
+
+    const categoryName = this.options.categoryData.find(c => c.key === category)?.name;
+
+    name.innerHTML = categoryName;
     this.emojis.appendChild(name);
     this.headers.push(name);
 

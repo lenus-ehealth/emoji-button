@@ -2,7 +2,6 @@
   "name": "@emoji-button/emoji-data",
   "description": "Emoji data for Emoji Button",
   "version": "5.0.0",
-  "main": "dist/index.js",
   "scripts": {
     "build": "node src/index.js"
   },
@@ -20,5 +19,10 @@
   "license": "MIT",
   "files": [
     "dist"
-  ]
+  ],
+  "devDependencies": {
+    "emojibase": "^5.2.0",
+    "emojibase-data": "^6.2.0",
+    "ora": "^5.4.0"
+  }
 }

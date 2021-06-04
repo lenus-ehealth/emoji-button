@@ -21,16 +21,13 @@ export function formatEmojiName(name) {
   return words.join(' ');
 }
 
-export function buildEmojiCategoryData(emojiData) {
+export function buildEmojiCategoryData(emojiData, categoryData) {
   const emojiCategories = {};
 
-  emojiData.emoji.forEach(emoji => {
-    let categoryList =
-      emojiCategories[emojiData.categories[emoji.category || 0]];
+  emojiData.forEach(emoji => {
+    let categoryList = emojiCategories[categoryData[emoji.category].key];
     if (!categoryList) {
-      categoryList = emojiCategories[
-        emojiData.categories[emoji.category || 0]
-      ] = [];
+      categoryList = emojiCategories[categoryData[emoji.category].key] = [];
     }
 
     categoryList.push(emoji);

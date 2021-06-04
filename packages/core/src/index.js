@@ -48,12 +48,12 @@ const DEFAULT_OPTIONS = {
   emojiVersion: '13.0',
   theme: 'light',
   categories: [
-    'smileys',
-    'people',
-    'animals',
-    'food',
+    'smileys-emotion',
+    'people-body',
+    'animals-nature',
+    'food-drink',
     'activities',
-    'travel',
+    'travel-places',
     'objects',
     'symbols',
     'flags'
@@ -72,6 +72,9 @@ const DEFAULT_OPTIONS = {
 // 4. Look into using basic Mustache templating?
 // 5. OR, clean up class selection/element creation
 // 6. Use different CSS imports for themes rather than passing a `theme` option
+// 7. Remove need to do computation of emoji/category lists, just use raw data!
+// 8. Remove hard coded categories array!
+// 9. Keyboard navigation is broken!
 //
 // look into using https://www.npmjs.com/package/emoji-datasource instead of maintaining our own
 // https://github.com/Armaldio/localize-emoji-db
@@ -110,7 +113,12 @@ export class EmojiButton {
 
     this.theme = this.options.theme;
 
-    this.emojiCategories = buildEmojiCategoryData(this.options.emojiData);
+    this.emojiCategories = buildEmojiCategoryData(
+      this.options.emojiData,
+      this.options.categoryData
+    );
+
+    console.log(this.emojiCategories);
 
     if (!this.options.renderer) {
       throw new Error('No Emoji Button renderer was specified');
@@ -229,9 +237,9 @@ export class EmojiButton {
         this.renderer,
         this.i18n,
         this.options,
-        this.options.emojiData?.emoji,
+        this.options.emojiData,
         (this.options.categories || []).map(category =>
-          this.options.emojiData.categories.indexOf(category)
+          this.options.categoryData.indexOf(category)
         )
       );
 
