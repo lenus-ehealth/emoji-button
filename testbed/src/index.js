@@ -18,7 +18,6 @@ function createPicker(button, options, onEmoji) {
   const picker = new EmojiButton(options);
   picker.on('emoji', data => {
     onEmoji(data);
-    picker.destroyPicker();
   });
   button.addEventListener('click', () => picker.togglePicker(button));
 }

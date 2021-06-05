@@ -322,10 +322,6 @@ export class EmojiArea {
   }
 
   highlightCategory() {
-    if (document.activeElement?.classList.contains('emoji-picker__emoji')) {
-      return;
-    }
-
     let closestHeaderIndex = this.headerOffsets.findIndex(
       offset => offset >= Math.round(this.emojis.scrollTop)
     );
