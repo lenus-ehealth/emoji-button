@@ -1,183 +1,118 @@
-const fs = require('fs');
+const fs = require('fs/promises');
 const path = require('path');
-const readline = require('readline');
 
-const DATA_LINE_REGEX = /((?:[0-9A-F]+ ?)+)\s+;(.+)\s+#.+E([0-9.]+) (.+)/;
-const EMOJI_WITH_MODIFIER_REGEX = /([a-z]+): ([a-z -]+)/;
-const EMOJI_WITH_SKIN_TONE_AND_MODIFIER_REGEX =
-  /([a-z]+): ([a-z -]+), ([a-z ]+)/;
+const emojis = require('emojibase-data/en/data.json');
+const { groups } = require('emojibase-data/meta/groups.json');
 
-const categoryKeys = {
-  'Smileys & Emotion': 'smileys',
-  'People & Body': 'people',
-  'Animals & Nature': 'animals',
-  'Food & Drink': 'food',
-  Activities: 'activities',
-  'Travel & Places': 'travel',
-  Objects: 'objects',
-  Symbols: 'symbols',
-  Flags: 'flags'
-};
+const chalk = require('chalk');
+const xml2js = require('xml2js');
 
-const EXCLUDE_LIST = [
-  'light skin tone',
-  'medium-light skin tone',
-  'medium skin tone',
-  'medium-dark skin tone',
-  'dark skin tone',
-  'red hair',
-  'white hair',
-  'curly hair',
-  'bald'
-];
+const distPath = path.resolve(__dirname, '..', 'dist');
 
-const MODIFIER_SUBSTITUTIONS = {
-  bald: 'no hair'
-};
+const annotationsPath = path.resolve(__dirname, '..', 'cldr', 'common', 'annotations');
+const annotationsDerivedPath = path.resolve(__dirname, '..', 'cldr', 'common', 'annotationsDerived');
 
-const stream = fs.createReadStream(
-  path.resolve(__dirname, '..', 'data', 'emoji-test.txt')
-);
-
-const outputDirectory = path.resolve(__dirname, '..', 'dist');
-const outputFile = path.resolve(outputDirectory, 'index.js');
-
-const readlineInterface = readline.createInterface(stream);
-
-let currentGroup;
-let currentSubgroup;
-let categoryIndex;
-
-const data = {
-  categories: [],
-  emoji: []
-};
-
-readlineInterface.on('line', line => {
-  if (line.startsWith('# group:')) {
-    currentGroup = line.slice('# group: '.length);
-    if (currentGroup !== 'Component') {
-      data.categories.push(categoryKeys[currentGroup]);
-      categoryIndex = data.categories.length - 1;
-    }
-  } else if (line.startsWith('# subgroup:')) {
-    currentSubgroup = line.slice('# subgroup: '.length);
-  } else if (!line.startsWith('#') && currentGroup !== 'Component') {
-    const matcher = DATA_LINE_REGEX.exec(line);
-    if (matcher) {
-      const sequence = matcher[1].trim();
-      const emoji = getEmoji(sequence);
-      let name = matcher[4];
-
-      let version = matcher[3];
-      if (version === '0.6' || version === '0.7') {
-        version = '1.0';
-      }
-
-      if (currentSubgroup === 'person') {
-        const modifierMatcher = EMOJI_WITH_MODIFIER_REGEX.exec(name);
-        const skinToneMatcher =
-          EMOJI_WITH_SKIN_TONE_AND_MODIFIER_REGEX.exec(name);
-        if (skinToneMatcher) {
-          name =
-            skinToneMatcher[1] +
-            ' with ' +
-            substituteModifier(skinToneMatcher[3]) +
-            ': ' +
-            skinToneMatcher[2];
-        } else if (modifierMatcher) {
-          if (!modifierMatcher[2].includes('skin tone')) {
-            name =
-              modifierMatcher[1] +
-              ' with ' +
-              substituteModifier(modifierMatcher[2]);
-          }
-        }
-      }
-
-      if (matcher[2].trim() !== 'unqualified') {
-        data.emoji.push({
-          sequence,
-          emoji,
-          category: categoryIndex,
-          name,
-          variations: [],
-          version
-        });
-      }
-    }
+async function start() {
+  try {
+    await fs.stat(distPath);
+  } catch (error) {
+    console.log('Creating output directory');
+    await fs.mkdir(distPath);
   }
-});
 
-readlineInterface.on('close', () => {
-  stream.close();
+  const localeFiles = await fs.readdir(annotationsPath);
 
-  let toDelete = [];
+  console.log('⚙️  Generating emoji locale data');
 
-  const emojisWithVariationSelector = data.emoji.filter(emoji =>
-    emoji.sequence.includes('FE0F')
-  );
-  emojisWithVariationSelector.forEach(emoji => {
-    const baseEmoji = data.emoji.find(
-      e => e.sequence === emoji.sequence.replace(' FE0F', '')
-    );
-    toDelete.push(baseEmoji);
+  localeFiles.forEach(async localeFile => {
+    const [locale] = localeFile.split('.');
+
+    const translations = await getTranslations(localeFile);
+
+    const categoryMap = Object.values(groups).reduce((result, category) => ({
+      ...result,
+      [category]: []
+    }), {});
+
+    emojis.forEach(emojiRecord => {
+      if (emojiRecord.group >= 0) {
+        const item = {
+          emoji: emojiRecord.emoji,
+          name: emojiRecord.annotation,
+          version: emojiRecord.version,
+          category: emojiRecord.group
+        };
+
+        const translatedName = translations[getNormalizedEmoji(emojiRecord.hexcode)];
+        if (translatedName) {
+          item.name = translatedName;
+        }
+
+        if (emojiRecord.skins) {
+          item.variations = emojiRecord.skins.map(skin => skin.emoji);
+        }
+
+        categoryMap[groups[emojiRecord.group]].push(item);
+      }
+    });
+
+    const outputPath = path.resolve(distPath, `${locale}.js`);
+
+    delete categoryMap.component;
+
+    await fs.writeFile(outputPath, `export default ${JSON.stringify(categoryMap)}`);
+
+    console.log(`  ${chalk.greenBright('✔')} ${locale}`);
   });
+}
 
-  data.emoji = data.emoji.filter(e => !toDelete.includes(e));
-  toDelete = [];
-
-  EXCLUDE_LIST.forEach(name =>
-    toDelete.push(data.emoji.find(e => e.name === name))
+async function getTranslations(localeFile) {
+  const annotations = await xml2js.parseStringPromise(
+    await fs.readFile(
+      path.resolve(annotationsPath, localeFile)
+    )
   );
 
-  const emojisWithVariations = data.emoji.filter(
-    emoji => emoji.name.includes(':') && !emoji.name.startsWith('family')
-  );
-  emojisWithVariations.forEach(emoji => {
-    const baseName = emoji.name.split(':')[0];
-    const baseEmoji = data.emoji.find(e => e.name === baseName);
-    if (baseEmoji) {
-      baseEmoji.variations.push(emoji.emoji);
-      toDelete.push(emoji);
-    }
-  });
+  if (!annotations.ldml.annotations) {
+    return {};
+  }
 
-  // Cleanup
-  data.emoji = data.emoji.filter(e => !toDelete.includes(e));
-  data.emoji.forEach(emoji => {
-    delete emoji.sequence;
-    if (!emoji.variations.length) {
-      delete emoji.variations;
-    }
-  });
+  const localeData = annotations.ldml.annotations[0].annotation.filter(isTTS);
 
   try {
-    fs.mkdirSync(outputDirectory);
+    const derivedParsed = await xml2js.parseStringPromise(
+      await fs.readFile(
+        path.resolve(annotationsDerivedPath, localeFile)
+      )
+    );
+
+    const derivedData = derivedParsed.ldml.annotations[0].annotation.filter(isTTS);
+    localeData.push(...derivedData);
   } catch (error) {
-    if (error.code !== 'EEXIST') {
-      throw error;
-    }
   }
 
-  fs.writeFileSync(outputFile, `export default ${JSON.stringify(data)}`);
-  console.log(`Emoji data written to ${outputFile}.`);
-});
+  const translations = {};
 
-function getEmoji(sequence) {
-  const chars = sequence.split(' ');
-  const codePoints = chars.map(char => parseInt(char, 16));
+  localeData.forEach(localeItem => {
+    translations[localeItem.$.cp] = localeItem._;
+  });
+
+  return translations;
+}
+
+function isTTS(item) {
+  return item.$.type === 'tts';
+}
+
+// Takes an emoji sequence and removes FE0F code points from it.
+// This is necessary because the CLDR data does not include FE0F characters.
+function getNormalizedEmoji(sequence) {
+  const codePoints = sequence
+    .split('-')
+    .filter(code => code !== 'FE0F')
+    .map(char => parseInt(char, 16));
+
   return String.fromCodePoint(...codePoints);
 }
 
-function substituteModifier(name) {
-  const substitutions = Object.keys(MODIFIER_SUBSTITUTIONS);
-  for (let i = 0; i < substitutions.length; i++) {
-    const substitution = substitutions[i];
-    if (name.includes(substitution)) {
-      return name.replace(substitution, MODIFIER_SUBSTITUTIONS[substitution]);
-    }
-  }
-
-  return name;
-}
+start();

@@ -16,14 +16,16 @@ import { CATEGORY_CLICKED } from './events';
 import { createElement, bindMethods } from './util';
 import { load } from './recent';
 
+const skipCategories = ['component'];
+
 const categorySortOrder = [
   'recents',
-  'smileys',
-  'people',
-  'animals',
-  'food',
+  'smileys-emotion',
+  'people-body',
+  'animals-nature',
+  'food-drink',
   'activities',
-  'travel',
+  'travel-places',
   'objects',
   'symbols',
   'flags',
@@ -31,11 +33,10 @@ const categorySortOrder = [
 ];
 
 export class EmojiArea {
-  constructor(events, renderer, i18n, options, emojiCategories) {
+  constructor(events, renderer, i18n, options) {
     this.events = events;
     this.i18n = i18n;
     this.options = options;
-    this.emojiCategories = emojiCategories;
 
     this.renderer = renderer;
 
@@ -43,8 +44,8 @@ export class EmojiArea {
     this.focusedIndex = 0;
     this.currentCategory = 0;
 
-    this.emojisPerRow = options.emojisPerRowl;
-    this.categories = options.categoryData.map(category => category.key);
+    this.emojisPerRow = options.emojisPerRow;
+    this.categories = Object.keys(options.emojiData);
 
     bindMethods(this, ['highlightCategory']);
 
@@ -63,14 +64,14 @@ export class EmojiArea {
 
   updateRecents() {
     if (this.options.showRecents) {
-      this.emojiCategories.recents = load();
+      this.recents = load();
       const recentsContainer = this.emojis.querySelector(
         `.${CLASS_EMOJI_CONTAINER}`
       );
       if (recentsContainer?.parentNode) {
         recentsContainer.parentNode.replaceChild(
           new EmojiContainer(
-            this.emojiCategories.recents,
+            this.recents,
             this.renderer,
             true,
             this.events,
@@ -98,18 +99,19 @@ export class EmojiArea {
     this.emojis = createElement('div', CLASS_EMOJIS);
 
     if (this.options.showRecents) {
-      this.emojiCategories.recents = load();
+      this.recents = load();
+      this.recents = load();
     }
 
     if (this.options.custom) {
-      this.emojiCategories.custom = this.options.custom.map(custom => ({
+      this.custom = this.options.custom.map(custom => ({
         ...custom,
         custom: true
       }));
     }
 
     this.categories.forEach(category => {
-      this.addCategory(category, this.emojiCategories[category]);
+      this.addCategory(category, this.options.emojiData[category]);
     });
 
     // TODO investigate this double setTimeout
@@ -280,7 +282,8 @@ export class EmojiArea {
   addCategory = (category, emojis) => {
     const name = createElement('h2', CLASS_CATEGORY_NAME);
 
-    const categoryName = this.options.categoryData.find(c => c.key === category)?.name;
+    // TODO i18n category names!
+    const categoryName = category;
 
     name.innerHTML = categoryName;
     this.emojis.appendChild(name);

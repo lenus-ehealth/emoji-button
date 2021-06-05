@@ -6,8 +6,7 @@ import '@emoji-button/core/css/emoji-button.css';
 import { EmojiButton } from '@emoji-button/core';
 import NativeRenderer from '@emoji-button/renderer-native';
 import TwemojiRenderer from '@emoji-button/renderer-twemoji';
-import categoryData from '@emoji-button/emoji-data/dist/categories/es';
-import emojiData from '@emoji-button/emoji-data/dist/emojis/es';
+import emojiData from '@emoji-button/emoji-data/dist/en';
 
 document.querySelector('#version').innerHTML = `v${EmojiButton.version}`;
 
@@ -28,8 +27,9 @@ const native = document.querySelector('#native .emoji-button');
 createPicker(
   native,
   {
+    showSearch: false,
+    showRecents: false,
     emojiData,
-    categoryData,
     renderer: new NativeRenderer()
   },
   ({ emoji }) => {

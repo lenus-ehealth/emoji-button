@@ -58,6 +58,8 @@ export class Search {
 
     this.focusedEmojiIndex = 0;
 
+    // TODO fix search!
+
     this.emojiData = emojiData.filter(
       e =>
         e.version &&

@@ -13,7 +13,7 @@ import {
 } from './events';
 import { EmojiPreview } from './preview';
 import { Search } from './search';
-import { createElement, empty, buildEmojiCategoryData } from './util';
+import { createElement, empty } from './util';
 import { VariantPopup } from './variantPopup';
 
 import lazyLoad from './lazyLoad';
@@ -62,7 +62,7 @@ const DEFAULT_OPTIONS = {
   emojisPerRow: 8,
   rows: 6,
   emojiSize: '1.8em',
-  initialCategory: 'smileys'
+  initialCategory: 'smileys-emotion'
 };
 
 // REFACTOR TODO:
@@ -74,20 +74,10 @@ const DEFAULT_OPTIONS = {
 // 6. Use different CSS imports for themes rather than passing a `theme` option
 // 7. Remove need to do computation of emoji/category lists, just use raw data!
 // 8. Remove hard coded categories array!
-// 9. Keyboard navigation is broken!
-//
-// look into using https://www.npmjs.com/package/emoji-datasource instead of maintaining our own
-// https://github.com/Armaldio/localize-emoji-db
-// https://github.com/unicode-org/cldr/tree/master/common/annotations
-// https://github.com/unicode-org/cldr/tree/master/common/annotationsDerived
-// https://github.com/roderickhsiao/emoji-button-locale-data
-// Root emoji data test file: https://github.com/unicode-org/cldr/tree/master/tools/cldr-code/src/main/resources/org/unicode/cldr/util/data/emoji
 //
 // IDEAS:
 //
 // 1. React component/hook for using Emoji Button?
-// Can also "adopt" i18n package under the @emoji-button umbrella
-// Would need to refactor into a monorepo? Lerna?
 //
 // Drop classes and use objects/factories?
 
@@ -112,13 +102,6 @@ export class EmojiButton {
     this.onDocumentKeydown = this.onDocumentKeydown.bind(this);
 
     this.theme = this.options.theme;
-
-    this.emojiCategories = buildEmojiCategoryData(
-      this.options.emojiData,
-      this.options.categoryData
-    );
-
-    console.log(this.emojiCategories);
 
     if (!this.options.renderer) {
       throw new Error('No Emoji Button renderer was specified');
@@ -239,7 +222,7 @@ export class EmojiButton {
         this.options,
         this.options.emojiData,
         (this.options.categories || []).map(category =>
-          this.options.categoryData.indexOf(category)
+          Object.keys(this.options.emojiData).indexOf(category)
         )
       );
 
@@ -314,8 +297,7 @@ export class EmojiButton {
       this.events,
       this.renderer,
       this.i18n,
-      this.options,
-      this.emojiCategories
+      this.options
     );
     this.pickerContent.appendChild(this.emojiArea.render());
 
