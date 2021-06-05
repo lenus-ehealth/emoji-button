@@ -345,7 +345,7 @@ export class EmojiArea {
 
     this.currentCategory = closestHeaderIndex - 1;
     if (this.options.showCategoryButtons) {
-      this.categoryButtons.setActiveButton(this.currentCategory);
+      this.categoryButtons.setActiveButton(this.currentCategory, false);
     }
   }
 }

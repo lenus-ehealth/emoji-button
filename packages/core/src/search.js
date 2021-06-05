@@ -1,5 +1,3 @@
-import fuzzysort from 'fuzzysort';
-
 import * as icons from './icons';
 
 import { EmojiContainer } from './emojiContainer';
@@ -34,7 +32,7 @@ class NotFoundMessage {
     if (this.iconUrl) {
       iconContainer.appendChild(icons.createIcon(this.iconUrl));
     } else {
-      iconContainer.innerHTML = icons.frown;
+      iconContainer.innerHTML = icons.notFound;
     }
 
     container.appendChild(iconContainer);
@@ -58,15 +56,9 @@ export class Search {
 
     this.focusedEmojiIndex = 0;
 
-    // TODO fix search!
-
-    this.emojiData = emojiData.filter(
-      e =>
-        e.version &&
-        parseFloat(e.version) <= parseFloat(options.emojiVersion) &&
-        e.category !== undefined &&
-        categories.indexOf(e.category) >= 0
-    );
+    this.emojiData = Object.keys(emojiData)
+      .flatMap(category => emojiData[category])
+      .filter(e => e.version && e.version <= options.emojiVersion);
 
     if (this.options.custom) {
       const customEmojis = this.options.custom.map(custom => ({
@@ -213,13 +205,15 @@ export class Search {
       }
       this.searchIcon.style.cursor = 'pointer';
 
-      const searchResults = fuzzysort
-        .go(this.searchField.value, this.emojiData, {
-          allowTypo: true,
-          limit: 100,
-          key: 'name'
-        })
-        .map(result => result.obj);
+      const searchResults = this.emojiData.filter(emoji => emoji.name.includes(this.searchField.value));
+
+      // const searchResults = fuzzysort
+      //   .go(this.searchField.value, this.emojiData, {
+      //     allowTypo: true,
+      //     limit: 100,
+      //     key: 'name'
+      //   })
+      //   .map(result => result.obj);
 
       this.events.emit(HIDE_PREVIEW);
 

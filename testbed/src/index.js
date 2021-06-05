@@ -26,7 +26,6 @@ const native = document.querySelector('#native .emoji-button');
 createPicker(
   native,
   {
-    showSearch: false,
     showRecents: false,
     emojiData,
     renderer: new NativeRenderer()

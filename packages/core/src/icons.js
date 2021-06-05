@@ -15,7 +15,8 @@ import {
   faFlag,
   faFrown,
   faLightbulb,
-  faSmile
+  faSmile,
+  faTimesCircle,
 } from '@fortawesome/free-regular-svg-icons';
 
 library.add(
@@ -32,6 +33,7 @@ library.add(
   faSearch,
   faSmile,
   faTimes,
+  faTimesCircle,
   faUser
 );
 
@@ -49,6 +51,7 @@ export const search = buildIcon('fas', 'search');
 export const smile = buildIcon('far', 'smile');
 export const times = buildIcon('fas', 'times');
 export const user = buildIcon('fas', 'user');
+export const notFound = buildIcon('far', 'times-circle');
 
 function buildIcon(prefix, iconName) {
   return icon({ prefix, iconName }).html[0];
