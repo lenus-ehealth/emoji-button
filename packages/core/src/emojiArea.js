@@ -16,8 +16,6 @@ import { CATEGORY_CLICKED } from './events';
 import { createElement, bindMethods } from './util';
 import { load } from './recent';
 
-const skipCategories = ['component'];
-
 const categorySortOrder = [
   'recents',
   'smileys-emotion',
@@ -282,8 +280,7 @@ export class EmojiArea {
   addCategory = (category, emojis) => {
     const name = createElement('h2', CLASS_CATEGORY_NAME);
 
-    // TODO i18n category names!
-    const categoryName = category;
+    const categoryName = this.i18n.categories[category];
 
     name.innerHTML = categoryName;
     this.emojis.appendChild(name);
