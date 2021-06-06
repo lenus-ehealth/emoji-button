@@ -7,7 +7,7 @@ import {
   SHOW_SEARCH_RESULTS,
   HIDE_SEARCH_RESULTS
 } from './events';
-import { createElement, empty } from './util';
+import { createElement, empty, findByClass, findAllByClass } from './util';
 
 import {
   CLASS_SEARCH_CONTAINER,
@@ -56,7 +56,7 @@ export class Search {
 
     this.focusedEmojiIndex = 0;
 
-    this.emojiData = Object.keys(emojiData)
+    this.emojiData = categories
       .flatMap(category => emojiData[category])
       .filter(e => e.version && e.version <= options.emojiVersion);
 
@@ -137,7 +137,7 @@ export class Search {
 
   setFocusedEmoji(index) {
     if (this.resultsContainer) {
-      const emojis = this.resultsContainer.querySelectorAll(`.${CLASS_EMOJI}`);
+      const emojis = findAllByClass(this.resultsContainer, CLASS_EMOJI);
       const currentFocusedEmoji = emojis[this.focusedEmojiIndex];
       currentFocusedEmoji.tabIndex = -1;
 
@@ -150,7 +150,7 @@ export class Search {
 
   handleResultsKeydown(event) {
     if (this.resultsContainer) {
-      const emojis = this.resultsContainer.querySelectorAll(`.${CLASS_EMOJI}`);
+      const emojis = findAllByClass(this.resultsContainer, CLASS_EMOJI);
       if (event.key === 'ArrowRight') {
         this.setFocusedEmoji(
           Math.min(this.focusedEmojiIndex + 1, emojis.length - 1)
@@ -207,14 +207,6 @@ export class Search {
 
       const searchResults = this.emojiData.filter(emoji => emoji.name.includes(this.searchField.value));
 
-      // const searchResults = fuzzysort
-      //   .go(this.searchField.value, this.emojiData, {
-      //     allowTypo: true,
-      //     limit: 100,
-      //     key: 'name'
-      //   })
-      //   .map(result => result.obj);
-
       this.events.emit(HIDE_PREVIEW);
 
       if (searchResults.length) {
@@ -228,8 +220,7 @@ export class Search {
         ).render();
 
         if (this.resultsContainer) {
-          // TODO utility for encapsulating querySelector on predefined classes
-          this.resultsContainer.querySelector(`.${CLASS_EMOJI}`).tabIndex = 0;
+          findByClass(this.resultsContainer, CLASS_EMOJI).tabIndex = 0;
           this.focusedEmojiIndex = 0;
 
           this.resultsContainer.addEventListener('keydown', event =>

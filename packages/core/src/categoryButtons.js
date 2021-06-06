@@ -2,21 +2,23 @@ import { CLASS_CATEGORY_BUTTONS, CLASS_CATEGORY_BUTTON } from './classes';
 
 import { CATEGORY_CLICKED } from './events';
 
+import { EmojiCategory, PickerUIElement } from './constants';
+
 import * as icons from './icons';
 import { createElement } from './util';
 
 const categoryIcons = {
-  recents: icons.history,
-  'smileys-emotion': icons.smile,
-  'people-body': icons.user,
-  'animals-nature': icons.cat,
-  'food-drink': icons.coffee,
-  activities: icons.futbol,
-  'travel-places': icons.building,
-  objects: icons.lightbulb,
-  symbols: icons.music,
-  flags: icons.flag,
-  custom: icons.icons
+  [EmojiCategory.RECENTS]: icons.history,
+  [EmojiCategory.SMILEYS]: icons.smile,
+  [EmojiCategory.PEOPLE]: icons.user,
+  [EmojiCategory.ANIMALS]: icons.cat,
+  [EmojiCategory.FOOD]: icons.coffee,
+  [EmojiCategory.ACTIVITIES]: icons.futbol,
+  [EmojiCategory.TRAVEL]: icons.building,
+  [EmojiCategory.OBJECTS]: icons.lightbulb,
+  [EmojiCategory.SYMBOLS]: icons.music,
+  [EmojiCategory.FLAGS]: icons.flag,
+  [EmojiCategory.CUSTOM]: icons.icons
 };
 
 export class CategoryButtons {
@@ -32,15 +34,14 @@ export class CategoryButtons {
   render() {
     const container = createElement('div', CLASS_CATEGORY_BUTTONS);
 
-    const categoryData =
-      this.options.categories || this.options.emojiData?.categories;
+    const categoryData = this.options.categories || this.options.emojiData?.categories;
 
-    let categories = this.options.showRecents
-      ? ['recents', ...categoryData]
+    let categories = this.options.uiElements.includes(PickerUIElement.RECENTS)
+      ? [EmojiCategory.RECENTS, ...categoryData]
       : categoryData;
 
     if (this.options.custom) {
-      categories = [...categories, 'custom'];
+      categories = [...categories, EmojiCategory.CUSTOM];
     }
 
     categories.forEach(category => {

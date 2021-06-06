@@ -3,7 +3,7 @@ import '@emoji-button/core/css/emoji-button.css';
 
 // import compactEmojis from 'emojibase-data/en/compact.json';
 
-import { EmojiButton } from '@emoji-button/core';
+import { EmojiButton, EmojiCategory, PickerUIElement } from '@emoji-button/core';
 import NativeRenderer from '@emoji-button/renderer-native';
 import TwemojiRenderer from '@emoji-button/renderer-twemoji';
 import emojiData from '@emoji-button/emoji-data/dist/en';
@@ -26,8 +26,13 @@ const native = document.querySelector('#native .emoji-button');
 createPicker(
   native,
   {
-    showRecents: false,
     emojiData,
+    uiElements: [
+      PickerUIElement.PREVIEW,
+      PickerUIElement.SEARCH,
+      PickerUIElement.VARIANTS,
+      PickerUIElement.CATEGORY_BUTTONS
+    ],
     renderer: new NativeRenderer()
   },
   ({ emoji }) => {

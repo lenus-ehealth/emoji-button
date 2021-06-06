@@ -34,46 +34,46 @@ import { EmojiArea } from './emojiArea';
 
 const MOBILE_BREAKPOINT = 450;
 
+import { PickerUIElement, EmojiCategory } from './constants';
+
+export { PickerUIElement, EmojiCategory };
+
 const DEFAULT_OPTIONS = {
   position: 'auto',
   autoHide: true,
   autoFocusSearch: true,
   showAnimation: true,
-  showPreview: true,
-  showSearch: true,
-  showRecents: true,
-  showVariants: true,
-  showCategoryButtons: true,
   recentsCount: 50,
   emojiVersion: 13,
   theme: 'light',
-  categories: [
-    'smileys-emotion',
-    'people-body',
-    'animals-nature',
-    'food-drink',
-    'activities',
-    'travel-places',
-    'objects',
-    'symbols',
-    'flags'
+  uiElements: [
+    PickerUIElement.PREVIEW,
+    PickerUIElement.SEARCH,
+    PickerUIElement.RECENTS,
+    PickerUIElement.VARIANTS,
+    PickerUIElement.CATEGORY_BUTTONS
   ],
-  style: 'native',
+  categories: [
+    EmojiCategory.SMILEYS,
+    EmojiCategory.PEOPLE,
+    EmojiCategory.ANIMALS,
+    EmojiCategory.FOOD,
+    EmojiCategory.ACTIVITIES,
+    EmojiCategory.TRAVEL,
+    EmojiCategory.OBJECTS,
+    EmojiCategory.FLAGS
+  ],
   emojisPerRow: 8,
   rows: 6,
-  emojiSize: '1.8em',
-  initialCategory: 'smileys-emotion'
+  emojiSize: '1.8em'
 };
 
 // REFACTOR TODO:
 //
 // 0. FIX BROKEN TESTS!
-// 3. Enforce renderer of 'native' or 'twemoji' - throw error otherwise. Right now it just falls through to native.
 // 4. Look into using basic Mustache templating?
 // 5. OR, clean up class selection/element creation
 // 6. Use different CSS imports for themes rather than passing a `theme` option
-// 7. Remove need to do computation of emoji/category lists, just use raw data!
-// 8. Remove hard coded categories array!
 //
 // IDEAS:
 //
@@ -153,7 +153,7 @@ export class EmojiButton {
     this.options.emojiSize &&
       this.pickerEl.style.setProperty('--emoji-size', this.options.emojiSize);
 
-    if (!this.options.showCategoryButtons) {
+    if (!this.options.uiElements.includes(PickerUIElement.CATEGORY_BUTTONS)) {
       this.pickerEl.style.setProperty('--category-button-height', '0');
     }
 
@@ -197,7 +197,7 @@ export class EmojiButton {
    * @param param0 The selected emoji and show variants flag
    */
   async emitEmoji({ emoji, showVariants }) {
-    if (emoji.variations && showVariants && this.options.showVariants) {
+    if (emoji.variations && showVariants && this.options.uiElements.includes(PickerUIElement.VARIANTS)) {
       this.showVariantPopup(emoji);
     } else {
       setTimeout(() => this.emojiArea.updateRecents());
@@ -214,16 +214,14 @@ export class EmojiButton {
    * Builds the search UI.
    */
   buildSearch() {
-    if (this.options.showSearch) {
+    if (this.options.uiElements.includes(PickerUIElement.SEARCH)) {
       this.search = new Search(
         this.events,
         this.renderer,
         this.i18n,
         this.options,
         this.options.emojiData,
-        (this.options.categories || []).map(category =>
-          Object.keys(this.options.emojiData).indexOf(category)
-        )
+        this.options.categories
       );
 
       this.pickerEl.appendChild(this.search.render());
@@ -234,7 +232,7 @@ export class EmojiButton {
    * Builds the emoji preview area.
    */
   buildPreview() {
-    if (this.options.showPreview) {
+    if (this.options.uiElements.includes(PickerUIElement.PREVIEW)) {
       this.pickerEl.appendChild(
         new EmojiPreview(this.events, this.renderer, this.options).render()
       );
@@ -268,7 +266,7 @@ export class EmojiButton {
     this.focusTrap = createFocusTrap(this.pickerEl, {
       clickOutsideDeactivates: true,
       initialFocus:
-        this.options.showSearch && this.options.autoFocusSearch
+        this.options.uiElements.includes(PickerUIElement.SEARCH) && this.options.autoFocusSearch
           ? '.emoji-picker__search'
           : '.emoji-picker__emoji[tabindex="0"]'
     });
@@ -545,7 +543,7 @@ export class EmojiButton {
     // If the search field is visible and should be auto-focused, set the focus on
     // the search field. Otherwise, the initial focus will be on the first focusable emoji.
     const initialFocusElement = this.pickerEl.querySelector(
-      this.options.showSearch && this.options.autoFocusSearch
+      this.options.uiElements.includes(PickerUIElement.SEARCH) && this.options.autoFocusSearch
         ? `.${CLASS_SEARCH_FIELD}`
         : `.${CLASS_EMOJI}[tabindex="0"]`
     );

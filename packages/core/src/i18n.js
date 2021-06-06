@@ -1,17 +1,19 @@
+import { EmojiCategory } from './constants';
+
 export const i18n = {
   search: 'Search emojis...',
   categories: {
-    recents: 'Recent Emojis',
-    'smileys-emotion': 'Smileys & Emotion',
-    'people-body': 'People & Body',
-    'animals-nature': 'Animals & Nature',
-    'food-drink': 'Food & Drink',
-    activities: 'Activities',
-    'travel-places': 'Travel & Places',
-    objects: 'Objects',
-    symbols: 'Symbols',
-    flags: 'Flags',
-    custom: 'Custom'
+    [EmojiCategory.RECENTS]: 'Recent Emojis',
+    [EmojiCategory.SMILEYS]: 'Smileys & Emotion',
+    [EmojiCategory.PEOPLE]: 'People & Body',
+    [EmojiCategory.ANIMALS]: 'Animals & Nature',
+    [EmojiCategory.FOOD]: 'Food & Drink',
+    [EmojiCategory.ACTIVITIES]: 'Activities',
+    [EmojiCategory.TRAVEL]: 'Travel & Places',
+    [EmojiCategory.OBJECTS]: 'Objects',
+    [EmojiCategory.SYMBOLS]: 'Symbols',
+    [EmojiCategory.FLAGS]: 'Flags',
+    [EmojiCategory.CUSTOM]: 'Custom'
   },
   notFound: 'No emojis found'
 };

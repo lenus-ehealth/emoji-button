@@ -6,6 +6,7 @@ import { render } from './render';
 import { smile } from './icons';
 
 import { CLASS_EMOJI } from './classes';
+import { PickerUIElement } from './constants';
 
 export class Emoji {
   constructor(
@@ -58,8 +59,8 @@ export class Emoji {
     if (
       (!this.emoji.variations ||
         !this.showVariants ||
-        !this.options.showVariants) &&
-      this.options.showRecents
+        !this.options.uiElements.includes(PickerUIElement.VARIANTS)) &&
+      this.options.uiElements.includes(PickerUIElement.RECENTS)
     ) {
       save(this.emoji, this.options);
     }

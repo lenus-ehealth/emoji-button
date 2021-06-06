@@ -14,6 +14,14 @@ export function empty(element) {
   }
 }
 
+export function findByClass(container, className) {
+  return container.querySelector(`.${className}`);
+}
+
+export function findAllByClass(container, className) {
+  return container.querySelectorAll(`.${className}`);
+}
+
 export function formatEmojiName(name) {
   const words = name.split(/[-_]/);
   words[0] = words[0][0].toUpperCase() + words[0].slice(1);
