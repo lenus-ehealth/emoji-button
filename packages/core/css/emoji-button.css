@@ -71,7 +71,7 @@
 
   --content-height: calc((var(--emoji-size) * var(--emoji-size-multiplier)) * var(--row-count) + var(--category-name-size) + var(--category-button-height) + 0.5em);
 
-  --category-name-size: 0.85em;
+  --category-name-size: 1.2em;
 
   --category-button-height: 2em;
   --category-button-size: 1.1em;
@@ -308,7 +308,7 @@
   justify-content: center;
 }
 
-.emoji-picker__search-not-found h2 {
+.emoji-picker__search-not-found div {
   color: var(--secondary-text-color);
 }
 
@@ -316,7 +316,7 @@
   color: var(--dark-secondary-text-color);
 }
 
-.emoji-picker.dark .emoji-picker__search-not-found h2 {
+.emoji-picker.dark .emoji-picker__search-not-found .emoji-picker__search-not-found-message {
   color: var(--dark-secondary-text-color);
 }
 
@@ -329,9 +329,10 @@
   height: 1em;
 }
 
-.emoji-picker__search-not-found h2 {
+.emoji-picker__search-not-found .emoji-picker__search-not-found-message {
   margin: 0.5em 0;
-  font-size: 1em;
+  font-size: 1.25em;
+  font-weight: bold;
 }
 
 .emoji-picker__variant-overlay {
@@ -380,15 +381,21 @@
   animation: fade-out 0.05s var(--animation-easing);
 }
 
-.emoji-picker__emojis h2.emoji-picker__category-name {
-  font-size: 0.85em;
+.emoji-picker__emojis div.emoji-picker__category-name {
+  display: flex;
+  align-items: center;
+  font-size: 1.2em;
+  font-weight: bold;
   color: var(--secondary-text-color);
-  text-transform: uppercase;
-  margin: 0.25em 0;
+  margin: 0.5em 0;
   text-align: left;
 }
 
-.emoji-picker.dark h2.emoji-picker__category-name {
+.emoji-picker__emojis div.emoji-picker__category-name .emoji-picker__category-name-label {
+  margin-left: 0.25em;
+}
+
+.emoji-picker.dark div.emoji-picker__category-name {
   color: var(--dark-secondary-text-color);
 }
 
@@ -468,7 +475,7 @@ button.emoji-picker__category-button.active {
     border-color: var(--dark-search-border-color);
   }
  
-  .emoji-picker.auto h2.emoji-picker__category-name {
+  .emoji-picker.auto div.emoji-picker__category-name {
     color: var(--dark-secondary-text-color);
   }
 
@@ -484,7 +491,7 @@ button.emoji-picker__category-button.active {
     color: var(--dark-secondary-text-color);
   }
 
-  .emoji-picker.auto .emoji-picker__search-not-found h2 {
+  .emoji-picker.auto .emoji-picker__search-not-found div {
     color: var(--dark-secondary-text-color);
   }
 

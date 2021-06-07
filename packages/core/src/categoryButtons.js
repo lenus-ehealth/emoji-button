@@ -7,7 +7,7 @@ import { EmojiCategory, PickerUIElement } from './constants';
 import * as icons from './icons';
 import { createElement } from './util';
 
-const categoryIcons = {
+export const categoryIcons = {
   [EmojiCategory.RECENTS]: icons.history,
   [EmojiCategory.SMILEYS]: icons.smile,
   [EmojiCategory.PEOPLE]: icons.user,

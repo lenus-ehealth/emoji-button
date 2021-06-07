@@ -1,12 +1,14 @@
 export const CLASS_CATEGORY_BUTTON = 'emoji-picker__category-button';
 export const CLASS_CATEGORY_BUTTONS = 'emoji-picker__category-buttons';
 export const CLASS_CATEGORY_NAME = 'emoji-picker__category-name';
+export const CLASS_CATEGORY_NAME_LABEL = 'emoji-picker__category-name-label';
 export const CLASS_CUSTOM_EMOJI = 'emoji-picker__custom-emoji';
 export const CLASS_EMOJI = 'emoji-picker__emoji';
 export const CLASS_EMOJI_AREA = 'emoji-picker__emoji-area';
 export const CLASS_EMOJI_CONTAINER = 'emoji-picker__container';
 export const CLASS_EMOJIS = 'emoji-picker__emojis';
 export const CLASS_NOT_FOUND = 'emoji-picker__search-not-found';
+export const CLASS_NOT_FOUND_MESSAGE = 'emoji-picker__search-not-found-message';
 export const CLASS_NOT_FOUND_ICON = 'emoji-picker__search-not-found-icon';
 export const CLASS_OVERLAY = 'emoji-picker__overlay';
 export const CLASS_PICKER = 'emoji-picker';

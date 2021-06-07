@@ -9,6 +9,7 @@ import {
   CLASS_SEARCH_FIELD,
   CLASS_SEARCH_ICON,
   CLASS_NOT_FOUND,
+  CLASS_NOT_FOUND_MESSAGE,
   CLASS_NOT_FOUND_ICON,
   CLASS_EMOJI
 } from './classes';
@@ -32,7 +33,7 @@ class NotFoundMessage {
 
     container.appendChild(iconContainer);
 
-    const messageContainer = createElement('h2');
+    const messageContainer = createElement('div', CLASS_NOT_FOUND_MESSAGE);
     messageContainer.innerHTML = this.message;
     container.appendChild(messageContainer);
 

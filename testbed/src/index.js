@@ -27,13 +27,11 @@ createPicker(
   native,
   {
     emojiData,
-    uiElements: [
-      PickerUIElement.RECENTS,
-      PickerUIElement.PREVIEW,
-      PickerUIElement.SEARCH,
-      PickerUIElement.VARIANTS,
-      PickerUIElement.CATEGORY_BUTTONS
-    ],
+    // categories: [
+    //   EmojiCategory.FOOD,
+    //   EmojiCategory.SMILEYS,
+    //   EmojiCategory.ANIMALS
+    // ],
     renderer: new NativeRenderer()
   },
   ({ emoji }) => {

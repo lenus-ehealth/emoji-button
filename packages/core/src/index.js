@@ -47,7 +47,7 @@ const DEFAULT_OPTIONS = {
     PickerUIElement.VARIANTS,
     PickerUIElement.CATEGORY_BUTTONS
   ],
-  categories: [
+  categories: [ // TODO include recents and custom here to allow reordering them as well, will need some refactoring
     EmojiCategory.SMILEYS,
     EmojiCategory.PEOPLE,
     EmojiCategory.ANIMALS,
@@ -55,6 +55,7 @@ const DEFAULT_OPTIONS = {
     EmojiCategory.ACTIVITIES,
     EmojiCategory.TRAVEL,
     EmojiCategory.OBJECTS,
+    EmojiCategory.SYMBOLS,
     EmojiCategory.FLAGS
   ],
   emojisPerRow: 8,

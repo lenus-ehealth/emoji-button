@@ -1,8 +1,15 @@
 import { findByClass } from './util';
 
-import { CLASS_EMOJI_CONTAINER, CLASS_EMOJI, CLASS_EMOJI_AREA, CLASS_EMOJIS, CLASS_CATEGORY_NAME } from './classes';
+import {
+  CLASS_CATEGORY_NAME_LABEL,
+  CLASS_EMOJI_CONTAINER,
+  CLASS_EMOJI,
+  CLASS_EMOJI_AREA,
+  CLASS_EMOJIS,
+  CLASS_CATEGORY_NAME
+} from './classes';
 
-import { CategoryButtons } from './categoryButtons';
+import { CategoryButtons, categoryIcons } from './categoryButtons';
 import { EmojiContainer } from './emojiContainer';
 
 import { CATEGORY_CLICKED } from './events';
@@ -10,21 +17,6 @@ import { CATEGORY_CLICKED } from './events';
 import { createElement, bindMethods, findAllByClass } from './util';
 import { load } from './recent';
 import { PickerUIElement, EmojiCategory } from './constants';
-
-// TODO don't need this, just use order categories were specified
-const categorySortOrder = [
-  'recents',
-  'smileys-emotion',
-  'people-body',
-  'animals-nature',
-  'food-drink',
-  'activities',
-  'travel-places',
-  'objects',
-  'symbols',
-  'flags',
-  'custom'
-];
 
 export class EmojiArea {
   constructor(events, renderer, i18n, options) {
@@ -52,8 +44,6 @@ export class EmojiArea {
     if (options.custom) {
       this.categories = [...this.categories, EmojiCategory.CUSTOM];
     }
-
-    this.categories.sort((a, b) => categorySortOrder.indexOf(a) - categorySortOrder.indexOf(b));
   }
 
   updateRecents() {
@@ -240,16 +230,24 @@ export class EmojiArea {
   }
 
   addCategory = (category, emojis) => {
-    const name = createElement('h2', CLASS_CATEGORY_NAME);
+    const nameEl = createElement('div', CLASS_CATEGORY_NAME);
 
     const categoryName = this.i18n.categories[category];
 
-    name.innerHTML = categoryName;
-    this.emojis.appendChild(name);
-    this.headers.push(name);
+    const icon = createElement('div');
+    icon.innerHTML = categoryIcons[category];
+
+    const label = createElement('div', CLASS_CATEGORY_NAME_LABEL);
+    label.innerHTML = categoryName;
+
+    nameEl.appendChild(icon);
+    nameEl.appendChild(label);
+
+    this.emojis.appendChild(nameEl);
+    this.headers.push(nameEl);
 
     this.emojis.appendChild(
-      new EmojiContainer(emojis, this.renderer, true, this.events, this.options, category !== 'recents').render()
+      new EmojiContainer(emojis, this.renderer, true, this.events, this.options, category !== EmojiCategory.RECENTS).render()
     );
   };
 
