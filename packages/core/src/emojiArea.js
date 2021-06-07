@@ -13,7 +13,7 @@ import { EmojiContainer } from './emojiContainer';
 
 import { CATEGORY_CLICKED } from './events';
 
-import { createElement, bindMethods } from './util';
+import { createElement, bindMethods, findAllByClass } from './util';
 import { load } from './recent';
 import { PickerUIElement, EmojiCategory } from './constants';
 
@@ -130,7 +130,7 @@ export class EmojiArea {
 
     this.container.appendChild(this.emojis);
 
-    const firstEmoji = this.container.querySelectorAll(`.${CLASS_EMOJI}`)[0];
+    const firstEmoji = findAllByClass(this.container, CLASS_EMOJI)[0];
     firstEmoji.tabIndex = 0;
 
     return this.container;
@@ -153,26 +153,20 @@ export class EmojiArea {
   }
 
   get currentCategoryEl() {
-    return this.emojis.querySelectorAll(`.${CLASS_EMOJI_CONTAINER}`)[
-      this.currentCategory
-    ];
+    return findAllByClass(this.emojis, CLASS_EMOJI_CONTAINER)[this.currentCategory];
   }
 
   get focusedEmoji() {
-    return this.currentCategoryEl.querySelectorAll(`.${CLASS_EMOJI}`)[
-      this.focusedIndex
-    ];
+    return findAllByClass(this.currentCategoryEl, CLASS_EMOJI)[this.focusedIndex];
   }
 
   get currentEmojiCount() {
-    return this.currentCategoryEl.querySelectorAll(`.${CLASS_EMOJI}`).length;
+    return findAllByClass(this.currentCategoryEl, CLASS_EMOJI).length;
   }
 
   getEmojiCount(category) {
-    const container = this.emojis.querySelectorAll(`.${CLASS_EMOJI_CONTAINER}`)[
-      category
-    ];
-    return container.querySelectorAll(`.${CLASS_EMOJI}`).length;
+    const container = findAllByClass(this.emojis, CLASS_EMOJI_CONTAINER)[category];
+    return findAllByClass(container, CLASS_EMOJI).length;
   }
 
   handleKeyDown = event => {

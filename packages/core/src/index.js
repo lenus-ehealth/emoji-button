@@ -13,7 +13,7 @@ import {
 } from './events';
 import { EmojiPreview } from './preview';
 import { Search } from './search';
-import { createElement, empty } from './util';
+import { createElement, empty, findAllByClass } from './util';
 import { VariantPopup } from './variantPopup';
 
 import lazyLoad from './lazyLoad';
@@ -364,8 +364,7 @@ export class EmojiButton {
       }
     );
 
-    this.emojiArea.emojis
-      .querySelectorAll(`.${CLASS_EMOJI}`)
+    findAllByClass(this.emojiArea.emojis, CLASS_EMOJI)
       .forEach(element => {
         if (this.shouldLazyLoad(element)) {
           this.observer.observe(element);
