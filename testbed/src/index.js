@@ -28,6 +28,7 @@ createPicker(
   {
     emojiData,
     uiElements: [
+      PickerUIElement.RECENTS,
       PickerUIElement.PREVIEW,
       PickerUIElement.SEARCH,
       PickerUIElement.VARIANTS,

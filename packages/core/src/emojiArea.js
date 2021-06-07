@@ -110,7 +110,11 @@ export class EmojiArea {
     }
 
     this.categories.forEach(category => {
-      this.addCategory(category, this.options.emojiData[category]);
+      if (category === EmojiCategory.RECENTS) {
+        this.addCategory(category, this.recents);
+      } else {
+        this.addCategory(category, this.options.emojiData[category]);
+      }
     });
 
     this.emojis.addEventListener('scroll', this.highlightCategory);
