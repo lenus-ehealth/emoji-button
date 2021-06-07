@@ -4,13 +4,7 @@ import { createFocusTrap } from 'focus-trap';
 import Events from './events';
 import { createPopper } from '@popperjs/core';
 
-import {
-  EMOJI,
-  SHOW_SEARCH_RESULTS,
-  HIDE_SEARCH_RESULTS,
-  HIDE_VARIANT_POPUP,
-  PICKER_HIDDEN
-} from './events';
+import { EMOJI, SHOW_SEARCH_RESULTS, HIDE_SEARCH_RESULTS, HIDE_VARIANT_POPUP, PICKER_HIDDEN } from './events';
 import { EmojiPreview } from './preview';
 import { Search } from './search';
 import { createElement, empty, findAllByClass } from './util';
@@ -139,19 +133,11 @@ export class EmojiButton {
     }
 
     this.options.emojisPerRow &&
-      this.pickerEl.style.setProperty(
-        '--emoji-per-row',
-        this.options.emojisPerRow.toString()
-      );
+      this.pickerEl.style.setProperty('--emoji-per-row', this.options.emojisPerRow.toString());
 
-    this.options.rows &&
-      this.pickerEl.style.setProperty(
-        '--row-count',
-        this.options.rows.toString()
-      );
+    this.options.rows && this.pickerEl.style.setProperty('--row-count', this.options.rows.toString());
 
-    this.options.emojiSize &&
-      this.pickerEl.style.setProperty('--emoji-size', this.options.emojiSize);
+    this.options.emojiSize && this.pickerEl.style.setProperty('--emoji-size', this.options.emojiSize);
 
     if (!this.options.uiElements.includes(PickerUIElement.CATEGORY_BUTTONS)) {
       this.pickerEl.style.setProperty('--category-button-height', '0');
@@ -160,10 +146,7 @@ export class EmojiButton {
     if (this.options.styleProperties) {
       Object.keys(this.options.styleProperties).forEach(key => {
         if (this.options.styleProperties) {
-          this.pickerEl.style.setProperty(
-            key,
-            this.options.styleProperties[key]
-          );
+          this.pickerEl.style.setProperty(key, this.options.styleProperties[key]);
         }
       });
     }
@@ -233,9 +216,7 @@ export class EmojiButton {
    */
   buildPreview() {
     if (this.options.uiElements.includes(PickerUIElement.PREVIEW)) {
-      this.pickerEl.appendChild(
-        new EmojiPreview(this.events, this.renderer, this.options).render()
-      );
+      this.pickerEl.appendChild(new EmojiPreview(this.events, this.renderer, this.options).render());
     }
   }
 
@@ -248,9 +229,7 @@ export class EmojiButton {
 
       this.options.plugins.forEach(plugin => {
         if (!plugin.render) {
-          throw new Error(
-            'Emoji Button plugins must have a "render" function.'
-          );
+          throw new Error('Emoji Button plugins must have a "render" function.');
         }
         pluginContainer.appendChild(plugin.render(this));
       });
@@ -291,12 +270,7 @@ export class EmojiButton {
 
     this.pickerEl.appendChild(this.pickerContent);
 
-    this.emojiArea = new EmojiArea(
-      this.events,
-      this.renderer,
-      this.i18n,
-      this.options
-    );
+    this.emojiArea = new EmojiArea(this.events, this.renderer, this.i18n, this.options);
     this.pickerContent.appendChild(this.emojiArea.render());
 
     this.cleanupEvents = this.events.bindEvents(
@@ -331,12 +305,7 @@ export class EmojiButton {
    * @param emoji The emoji whose variants are to be shown.
    */
   showVariantPopup(emoji) {
-    const variantPopup = new VariantPopup(
-      this.events,
-      this.renderer,
-      emoji,
-      this.options
-    ).render();
+    const variantPopup = new VariantPopup(this.events, this.renderer, emoji, this.options).render();
 
     if (variantPopup) {
       this.pickerEl.appendChild(variantPopup);
@@ -357,19 +326,15 @@ export class EmojiButton {
    * as they are scrolled into view.
    */
   observeForLazyLoad() {
-    this.observer = new IntersectionObserver(
-      this.handleIntersectionChange.bind(this),
-      {
-        root: this.emojiArea.emojis
-      }
-    );
+    this.observer = new IntersectionObserver(this.handleIntersectionChange.bind(this), {
+      root: this.emojiArea.emojis
+    });
 
-    findAllByClass(this.emojiArea.emojis, CLASS_EMOJI)
-      .forEach(element => {
-        if (this.shouldLazyLoad(element)) {
-          this.observer.observe(element);
-        }
-      });
+    findAllByClass(this.emojiArea.emojis, CLASS_EMOJI).forEach(element => {
+      if (this.shouldLazyLoad(element)) {
+        this.observer.observe(element);
+      }
+    });
   }
 
   /**
@@ -450,10 +415,7 @@ export class EmojiButton {
 
     // In some browsers, the delayed hide was triggering the scroll event handler
     // and stealing the focus. Remove the scroll listener before doing the delayed hide.
-    this.emojiArea.emojis.removeEventListener(
-      'scroll',
-      this.emojiArea.highlightCategory
-    );
+    this.emojiArea.emojis.removeEventListener('scroll', this.emojiArea.highlightCategory);
 
     this.pickerEl.classList.add('hiding');
 
@@ -522,10 +484,7 @@ export class EmojiButton {
    * @param referenceEl The element to position relative to if relative positioning is used.
    */
   determineDisplay(referenceEl) {
-    if (
-      window.matchMedia(`screen and (max-width: ${MOBILE_BREAKPOINT}px)`)
-        .matches
-    ) {
+    if (window.matchMedia(`screen and (max-width: ${MOBILE_BREAKPOINT}px)`).matches) {
       this.showMobileView();
     } else if (typeof this.options.position === 'string') {
       this.setRelativePosition(referenceEl);

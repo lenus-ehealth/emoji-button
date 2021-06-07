@@ -3,7 +3,10 @@
   "description": "Emoji data for Emoji Button",
   "version": "5.0.0",
   "scripts": {
-    "build": "node src/index.js"
+    "build": "node src/index.js",
+    "lint": "eslint src",
+    "prettier:check": "prettier --check src",
+    "prettier:write": "prettier --write src"
   },
   "keywords": [
     "emoji"

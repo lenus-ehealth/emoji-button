@@ -24,9 +24,7 @@ describe('Search', () => {
 
   test('should render search results', done => {
     events.on(SHOW_SEARCH_RESULTS, searchResultsContainer => {
-      const searchResults = searchResultsContainer.querySelectorAll(
-        '.emoji-picker__emoji'
-      );
+      const searchResults = searchResultsContainer.querySelectorAll('.emoji-picker__emoji');
       expect(searchResults.length).toBe(1);
       expect(searchResults[0].innerHTML).toEqual(emojis[0].emoji);
       done();
@@ -39,9 +37,7 @@ describe('Search', () => {
   test('should not show search results for the unselected categories', done => {
     search = new Search(events, i18n, options, emojis, [0]).render();
     events.on(SHOW_SEARCH_RESULTS, searchResultsContainer => {
-      const searchResults = searchResultsContainer.querySelectorAll(
-        '.emoji-picker__emoji'
-      );
+      const searchResults = searchResultsContainer.querySelectorAll('.emoji-picker__emoji');
       expect(searchResults.length).toBe(0);
       done();
     });
@@ -52,11 +48,7 @@ describe('Search', () => {
 
   test('should render a not found message when there are no results', done => {
     events.on(SHOW_SEARCH_RESULTS, searchResultsContainer => {
-      expect(
-        searchResultsContainer.classList.contains(
-          'emoji-picker__search-not-found'
-        )
-      ).toBe(true);
+      expect(searchResultsContainer.classList.contains('emoji-picker__search-not-found')).toBe(true);
       done();
     });
 

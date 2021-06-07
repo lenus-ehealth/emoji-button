@@ -14,26 +14,18 @@ describe('CategoryButtons', () => {
     const buttons = container.querySelectorAll('button');
     expect(buttons).toHaveLength(emojiData.categories.length);
     buttons.forEach((button, index) => {
-      expect(button.title).toEqual(
-        i18n.categories[emojiData.categories[index]]
-      );
+      expect(button.title).toEqual(i18n.categories[emojiData.categories[index]]);
     });
   });
 
   test('should include the recents category if showRecents is true', () => {
-    const container = new CategoryButtons(
-      { showRecents: true },
-      emitter,
-      i18n
-    ).render();
+    const container = new CategoryButtons({ showRecents: true }, emitter, i18n).render();
 
     const buttons = container.querySelectorAll('button');
     expect(buttons).toHaveLength(emojiData.categories.length + 1);
     expect(buttons[0].title).toEqual(i18n.categories.recents);
     Array.prototype.slice.call(buttons, 1).forEach((button, index) => {
-      expect(button.title).toEqual(
-        i18n.categories[emojiData.categories[index]]
-      );
+      expect(button.title).toEqual(i18n.categories[emojiData.categories[index]]);
     });
   });
 

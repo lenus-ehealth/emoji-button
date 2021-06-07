@@ -1,12 +1,6 @@
 import { findByClass } from './util';
 
-import {
-  CLASS_EMOJI_CONTAINER,
-  CLASS_EMOJI,
-  CLASS_EMOJI_AREA,
-  CLASS_EMOJIS,
-  CLASS_CATEGORY_NAME
-} from './classes';
+import { CLASS_EMOJI_CONTAINER, CLASS_EMOJI, CLASS_EMOJI_AREA, CLASS_EMOJIS, CLASS_CATEGORY_NAME } from './classes';
 
 import { CategoryButtons } from './categoryButtons';
 import { EmojiContainer } from './emojiContainer';
@@ -48,7 +42,7 @@ export class EmojiArea {
     this.categories = this.options.categories;
 
     this.showCategoryButtons = options.uiElements.includes(PickerUIElement.CATEGORY_BUTTONS);
-    
+
     bindMethods(this, ['highlightCategory']);
 
     if (options.uiElements.includes(PickerUIElement.RECENTS)) {
@@ -59,9 +53,7 @@ export class EmojiArea {
       this.categories = [...this.categories, EmojiCategory.CUSTOM];
     }
 
-    this.categories.sort(
-      (a, b) => categorySortOrder.indexOf(a) - categorySortOrder.indexOf(b)
-    );
+    this.categories.sort((a, b) => categorySortOrder.indexOf(a) - categorySortOrder.indexOf(b));
   }
 
   updateRecents() {
@@ -70,14 +62,7 @@ export class EmojiArea {
       const recentsContainer = findByClass(this.emojis, CLASS_EMOJI_CONTAINER);
       if (recentsContainer?.parentNode) {
         recentsContainer.parentNode.replaceChild(
-          new EmojiContainer(
-            this.recents,
-            this.renderer,
-            true,
-            this.events,
-            this.options,
-            false
-          ).render(),
+          new EmojiContainer(this.recents, this.renderer, true, this.events, this.options, false).render(),
           recentsContainer
         );
       }
@@ -88,11 +73,7 @@ export class EmojiArea {
     this.container = createElement('div', CLASS_EMOJI_AREA);
 
     if (this.showCategoryButtons) {
-      this.categoryButtons = new CategoryButtons(
-        this.options,
-        this.events,
-        this.i18n
-      );
+      this.categoryButtons = new CategoryButtons(this.options, this.events, this.i18n);
       this.container.appendChild(this.categoryButtons.render());
     }
 
@@ -141,10 +122,7 @@ export class EmojiArea {
   }
 
   reset() {
-    this.headerOffsets = Array.prototype.map.call(
-      this.headers,
-      header => header.offsetTop
-    );
+    this.headerOffsets = Array.prototype.map.call(this.headers, header => header.offsetTop);
 
     const initialCategory = this.options.initialCategory || this.categories[0];
 
@@ -179,10 +157,7 @@ export class EmojiArea {
       case 'ArrowRight':
         this.focusedEmoji.tabIndex = -1;
 
-        if (
-          this.focusedIndex === this.currentEmojiCount - 1 &&
-          this.currentCategory < this.categories.length - 1
-        ) {
+        if (this.focusedIndex === this.currentEmojiCount - 1 && this.currentCategory < this.categories.length - 1) {
           if (this.showCategoryButtons) {
             this.categoryButtons.setActiveButton(++this.currentCategory);
           }
@@ -215,16 +190,8 @@ export class EmojiArea {
           if (this.showCategoryButtons) {
             this.categoryButtons.setActiveButton(this.currentCategory);
           }
-          this.setFocusedEmoji(
-            Math.min(
-              this.focusedIndex % this.emojisPerRow,
-              this.currentEmojiCount - 1
-            )
-          );
-        } else if (
-          this.currentEmojiCount - this.focusedIndex >
-          this.emojisPerRow
-        ) {
+          this.setFocusedEmoji(Math.min(this.focusedIndex % this.emojisPerRow, this.currentEmojiCount - 1));
+        } else if (this.currentEmojiCount - this.focusedIndex > this.emojisPerRow) {
           this.setFocusedEmoji(this.focusedIndex + this.emojisPerRow);
         }
         break;
@@ -233,9 +200,7 @@ export class EmojiArea {
         this.focusedEmoji.tabIndex = -1;
 
         if (this.focusedIndex < this.emojisPerRow && this.currentCategory > 0) {
-          const previousCategoryCount = this.getEmojiCount(
-            this.currentCategory - 1
-          );
+          const previousCategoryCount = this.getEmojiCount(this.currentCategory - 1);
           let previousLastRowCount = previousCategoryCount % this.emojisPerRow;
           if (previousLastRowCount === 0) {
             previousLastRowCount = this.emojisPerRow;
@@ -254,16 +219,12 @@ export class EmojiArea {
           this.setFocusedEmoji(newIndex);
         } else {
           this.setFocusedEmoji(
-            this.focusedIndex >= this.emojisPerRow
-              ? this.focusedIndex - this.emojisPerRow
-              : this.focusedIndex
+            this.focusedIndex >= this.emojisPerRow ? this.focusedIndex - this.emojisPerRow : this.focusedIndex
           );
         }
         break;
     }
-    requestAnimationFrame(() =>
-      this.emojis.addEventListener('scroll', this.highlightCategory)
-    );
+    requestAnimationFrame(() => this.emojis.addEventListener('scroll', this.highlightCategory));
   };
 
   setFocusedEmoji(index, focus = true) {
@@ -288,14 +249,7 @@ export class EmojiArea {
     this.headers.push(name);
 
     this.emojis.appendChild(
-      new EmojiContainer(
-        emojis,
-        this.renderer,
-        true,
-        this.events,
-        this.options,
-        category !== 'recents'
-      ).render()
+      new EmojiContainer(emojis, this.renderer, true, this.events, this.options, category !== 'recents').render()
     );
   };
 
@@ -314,20 +268,13 @@ export class EmojiArea {
 
     const targetPosition = this.headerOffsets[categoryIndex];
     this.emojis.scrollTop = targetPosition;
-    requestAnimationFrame(() =>
-      this.emojis.addEventListener('scroll', this.highlightCategory)
-    );
+    requestAnimationFrame(() => this.emojis.addEventListener('scroll', this.highlightCategory));
   }
 
   highlightCategory() {
-    let closestHeaderIndex = this.headerOffsets.findIndex(
-      offset => offset >= Math.round(this.emojis.scrollTop)
-    );
+    let closestHeaderIndex = this.headerOffsets.findIndex(offset => offset >= Math.round(this.emojis.scrollTop));
 
-    if (
-      this.emojis.scrollTop + this.emojis.offsetHeight ===
-      this.emojis.scrollHeight
-    ) {
+    if (this.emojis.scrollTop + this.emojis.offsetHeight === this.emojis.scrollHeight) {
       closestHeaderIndex = -1;
     }
 

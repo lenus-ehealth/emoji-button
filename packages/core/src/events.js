@@ -14,9 +14,7 @@ export default class Events {
   }
 
   bindEvents(bindings, context) {
-    const cleanupFns = Object.keys(bindings).map(event =>
-      this.on(event, bindings[event], context)
-    );
+    const cleanupFns = Object.keys(bindings).map(event => this.on(event, bindings[event], context));
 
     return () => {
       cleanupFns.forEach(cleanupFn => cleanupFn());
@@ -49,9 +47,7 @@ export default class Events {
 
   off(event, callback) {
     if (callback) {
-      this.listeners[event] = this.getListeners(event).filter(
-        listener => listener.callback !== callback
-      );
+      this.listeners[event] = this.getListeners(event).filter(listener => listener.callback !== callback);
     } else {
       this.listeners[event] = [];
     }

@@ -13,9 +13,7 @@ export function emit(emoji) {
 }
 
 export function renderCustom(emoji, lazy) {
-  return lazy
-    ? smile
-    : `<img class="${CLASS_CUSTOM_EMOJI}" src="${emoji.emoji}">`;
+  return lazy ? smile : `<img class="${CLASS_CUSTOM_EMOJI}" src="${emoji.emoji}">`;
 }
 
 export function lazyLoadCustom(element) {

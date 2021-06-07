@@ -28,9 +28,7 @@ describe('EmojiArea', () => {
     const names = emojiArea.querySelectorAll('h2');
     expect(names).toHaveLength(emojiData.categories.length);
     names.forEach((name, index) => {
-      expect(name.innerHTML.replace('&amp;', '&')).toEqual(
-        i18n.categories[emojiData.categories[index]]
-      );
+      expect(name.innerHTML.replace('&amp;', '&')).toEqual(i18n.categories[emojiData.categories[index]]);
     });
   });
 
@@ -50,12 +48,8 @@ describe('EmojiArea', () => {
 
     const names = emojiArea.querySelectorAll('h2');
     expect(names).toHaveLength(2);
-    expect(names[0].innerHTML.replace('&amp;', '&')).toEqual(
-      i18n.categories.smileys
-    );
-    expect(names[1].innerHTML.replace('&amp;', '&')).toEqual(
-      i18n.categories.animals
-    );
+    expect(names[0].innerHTML.replace('&amp;', '&')).toEqual(i18n.categories.smileys);
+    expect(names[1].innerHTML.replace('&amp;', '&')).toEqual(i18n.categories.animals);
   });
 
   test('includes the recents category if showRecents is true', () => {
@@ -76,12 +70,8 @@ describe('EmojiArea', () => {
     const names = emojiArea.querySelectorAll('h2');
     expect(names).toHaveLength(3);
     expect(names[0].innerHTML).toEqual(i18n.categories.recents);
-    expect(names[1].innerHTML.replace('&amp;', '&')).toEqual(
-      i18n.categories.smileys
-    );
-    expect(names[2].innerHTML.replace('&amp;', '&')).toEqual(
-      i18n.categories.animals
-    );
+    expect(names[1].innerHTML.replace('&amp;', '&')).toEqual(i18n.categories.smileys);
+    expect(names[2].innerHTML.replace('&amp;', '&')).toEqual(i18n.categories.animals);
   });
 
   test('selects the initial category', () => {
@@ -100,9 +90,7 @@ describe('EmojiArea', () => {
     const container = emojiArea.render();
     emojiArea.reset();
 
-    const buttons = container.querySelectorAll(
-      '.emoji-picker__category-button'
-    );
+    const buttons = container.querySelectorAll('.emoji-picker__category-button');
     expect(buttons[2].classList).toContain('active');
   });
 });

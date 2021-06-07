@@ -11,25 +11,14 @@ export class EmojiContainer {
     this.lazy = lazy;
     this.renderer = renderer;
 
-    this.emojis = emojis.filter(
-      e =>
-        !e.version || parseFloat(e.version) <= parseFloat(options.emojiVersion)
-    );
+    this.emojis = emojis.filter(e => !e.version || parseFloat(e.version) <= parseFloat(options.emojiVersion));
   }
 
   render() {
     const emojiContainer = createElement('div', CLASS_EMOJI_CONTAINER);
     this.emojis.forEach(emoji =>
       emojiContainer.appendChild(
-        new Emoji(
-          emoji,
-          this.renderer,
-          this.showVariants,
-          true,
-          this.events,
-          this.options,
-          this.lazy
-        ).render()
+        new Emoji(emoji, this.renderer, this.showVariants, true, this.events, this.options, this.lazy).render()
       )
     );
 

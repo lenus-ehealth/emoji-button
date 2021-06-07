@@ -7,14 +7,17 @@ module.exports = {
     jest: true
   },
   ignorePatterns: ['src/data/*.js'],
-  extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+  extends: ['eslint:recommended', 'prettier'],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly'
   },
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: 'module'
+    sourceType: 'module',
+    babelOptions: {
+      rootMode: 'upward'
+    }
   },
   rules: {
     'no-console': 'error'

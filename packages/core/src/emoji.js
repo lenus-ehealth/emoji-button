@@ -9,15 +9,7 @@ import { CLASS_EMOJI } from './classes';
 import { PickerUIElement } from './constants';
 
 export class Emoji {
-  constructor(
-    emoji,
-    renderer,
-    showVariants,
-    showPreview,
-    events,
-    options,
-    lazy = true
-  ) {
+  constructor(emoji, renderer, showVariants, showPreview, events, options, lazy = true) {
     this.emoji = emoji;
     this.renderer = renderer;
     this.showVariants = showVariants;
@@ -57,9 +49,7 @@ export class Emoji {
   onEmojiClick() {
     // TODO move this side effect out of Emoji, make the recent module listen for event
     if (
-      (!this.emoji.variations ||
-        !this.showVariants ||
-        !this.options.uiElements.includes(PickerUIElement.VARIANTS)) &&
+      (!this.emoji.variations || !this.showVariants || !this.options.uiElements.includes(PickerUIElement.VARIANTS)) &&
       this.options.uiElements.includes(PickerUIElement.RECENTS)
     ) {
       save(this.emoji, this.options);

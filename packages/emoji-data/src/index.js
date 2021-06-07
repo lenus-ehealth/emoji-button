@@ -1,3 +1,5 @@
+/* eslint-disable no-console, no-empty */
+
 const fs = require('fs/promises');
 const path = require('path');
 
@@ -29,10 +31,13 @@ async function start() {
 
     const translations = await getTranslations(localeFile);
 
-    const categoryMap = Object.values(groups).reduce((result, category) => ({
-      ...result,
-      [category]: []
-    }), {});
+    const categoryMap = Object.values(groups).reduce(
+      (result, category) => ({
+        ...result,
+        [category]: []
+      }),
+      {}
+    );
 
     emojis.forEach(emojiRecord => {
       if (emojiRecord.group >= 0) {
@@ -67,11 +72,7 @@ async function start() {
 }
 
 async function getTranslations(localeFile) {
-  const annotations = await xml2js.parseStringPromise(
-    await fs.readFile(
-      path.resolve(annotationsPath, localeFile)
-    )
-  );
+  const annotations = await xml2js.parseStringPromise(await fs.readFile(path.resolve(annotationsPath, localeFile)));
 
   if (!annotations.ldml.annotations) {
     return {};
@@ -81,15 +82,12 @@ async function getTranslations(localeFile) {
 
   try {
     const derivedParsed = await xml2js.parseStringPromise(
-      await fs.readFile(
-        path.resolve(annotationsDerivedPath, localeFile)
-      )
+      await fs.readFile(path.resolve(annotationsDerivedPath, localeFile))
     );
 
     const derivedData = derivedParsed.ldml.annotations[0].annotation.filter(isTTS);
     localeData.push(...derivedData);
-  } catch (error) {
-  }
+  } catch (error) {}
 
   const translations = {};
 

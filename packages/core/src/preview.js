@@ -3,11 +3,7 @@ import { createElement } from './util';
 
 import { render } from './render';
 
-import {
-  CLASS_PREVIEW,
-  CLASS_PREVIEW_EMOJI,
-  CLASS_PREVIEW_NAME
-} from './classes';
+import { CLASS_PREVIEW, CLASS_PREVIEW_EMOJI, CLASS_PREVIEW_NAME } from './classes';
 
 export class EmojiPreview {
   constructor(events, renderer, options) {

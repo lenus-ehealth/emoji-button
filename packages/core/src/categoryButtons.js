@@ -47,14 +47,8 @@ export class CategoryButtons {
     categories.forEach(category => {
       const button = createElement('button', CLASS_CATEGORY_BUTTON);
 
-      if (
-        this.options.icons &&
-        this.options.icons.categories &&
-        this.options.icons.categories[category]
-      ) {
-        button.appendChild(
-          icons.createIcon(this.options.icons.categories[category])
-        );
+      if (this.options.icons && this.options.icons.categories && this.options.icons.categories[category]) {
+        button.appendChild(icons.createIcon(this.options.icons.categories[category]));
       } else {
         button.innerHTML = categoryIcons[category] || icons.smile;
       }
@@ -72,19 +66,12 @@ export class CategoryButtons {
     container.addEventListener('keydown', event => {
       switch (event.key) {
         case 'ArrowRight':
-          this.events.emit(
-            CATEGORY_CLICKED,
-            categories[(this.activeButton + 1) % this.buttons.length]
-          );
+          this.events.emit(CATEGORY_CLICKED, categories[(this.activeButton + 1) % this.buttons.length]);
           break;
         case 'ArrowLeft':
           this.events.emit(
             CATEGORY_CLICKED,
-            categories[
-              this.activeButton === 0
-                ? this.buttons.length - 1
-                : this.activeButton - 1
-            ]
+            categories[this.activeButton === 0 ? this.buttons.length - 1 : this.activeButton - 1]
           );
           break;
         case 'ArrowUp':

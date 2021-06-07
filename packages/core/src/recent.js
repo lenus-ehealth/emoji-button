@@ -18,11 +18,6 @@ export function save(emoji, options) {
 
   localStorage.setItem(
     LOCAL_STORAGE_KEY,
-    JSON.stringify(
-      [recent, ...recents.filter(r => !!r.emoji && r.key !== recent.key)].slice(
-        0,
-        options.recentsCount
-      )
-    )
+    JSON.stringify([recent, ...recents.filter(r => !!r.emoji && r.key !== recent.key)].slice(0, options.recentsCount))
   );
 }

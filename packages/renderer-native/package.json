@@ -5,7 +5,10 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "webpack",
-    "start": "webpack --watch"
+    "start": "webpack --watch",
+    "lint": "eslint src",
+    "prettier:check": "prettier --check src",
+    "prettier:write": "prettier --write src"
   },
   "keywords": [
     "emoji"
