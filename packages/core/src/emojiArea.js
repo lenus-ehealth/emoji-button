@@ -15,7 +15,7 @@ import { EmojiContainer } from './emojiContainer';
 import { CATEGORY_CLICKED } from './events';
 
 import { createElement, bindMethods, findAllByClass } from './util';
-import { load } from './recent';
+import { getRecents } from './recent';
 import { PickerUIElement, EmojiCategory } from './constants';
 
 export class EmojiArea {
@@ -48,7 +48,7 @@ export class EmojiArea {
 
   updateRecents() {
     if (this.options.uiElements.includes(PickerUIElement.RECENTS)) {
-      this.recents = load();
+      this.recents = getRecents(this.options);
       const recentsContainer = findByClass(this.emojis, CLASS_EMOJI_CONTAINER);
       if (recentsContainer?.parentNode) {
         recentsContainer.parentNode.replaceChild(
@@ -70,7 +70,7 @@ export class EmojiArea {
     this.emojis = createElement('div', CLASS_EMOJIS);
 
     if (this.options.uiElements.includes(PickerUIElement.RECENTS)) {
-      this.recents = load();
+      this.recents = getRecents(this.options);
     }
 
     if (this.options.custom) {
@@ -83,21 +83,14 @@ export class EmojiArea {
     this.categories.forEach(category => {
       if (category === EmojiCategory.RECENTS) {
         this.addCategory(category, this.recents);
+      } else if (category === EmojiCategory.CUSTOM) {
+        this.addCategory(category, this.custom);
       } else {
         this.addCategory(category, this.options.emojiData[category]);
       }
     });
 
     this.emojis.addEventListener('scroll', this.highlightCategory);
-
-    // TODO can this be removed?
-    // requestAnimationFrame(() => {
-    //   setTimeout(() => {
-    //     setTimeout(() =>
-    //       this.emojis.addEventListener('scroll', this.highlightCategory)
-    //     );
-    //   });
-    // });
 
     this.emojis.addEventListener('keydown', this.handleKeyDown);
 

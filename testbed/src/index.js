@@ -27,15 +27,22 @@ createPicker(
   native,
   {
     emojiData,
-    // categories: [
-    //   EmojiCategory.FOOD,
-    //   EmojiCategory.SMILEYS,
-    //   EmojiCategory.ANIMALS
-    // ],
+    custom: [
+      {
+        name: 'O RLY?',
+        emoji: '/orly.jpg'
+      }
+    ],
     renderer: new NativeRenderer()
   },
-  ({ emoji }) => {
-    native.innerHTML = emoji;
+  ({ url, emoji }) => {
+    // console.log(selection);
+    // console.log(url);
+    if (url) {
+      native.innerHTML = `<img src="${url}" />`;
+    } else {
+      native.innerHTML = emoji;
+    }
   }
 );
 

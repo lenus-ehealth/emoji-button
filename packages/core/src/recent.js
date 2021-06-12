@@ -1,23 +1,44 @@
-const LOCAL_STORAGE_KEY = 'emojiPicker.recent';
+const LOCAL_STORAGE_KEY = 'EmojiButton.recent';
 
-export function load() {
-  const recentJson = localStorage.getItem(LOCAL_STORAGE_KEY);
-  const recents = recentJson ? JSON.parse(recentJson) : [];
-  return recents.filter(recent => !!recent.emoji);
+let allEmoji;
+
+function getName({ emoji }) {
+  const record = allEmoji.find(e => e.emoji === emoji || e.variations?.includes(emoji));
+  return record?.name || '';
+}
+
+function flattenEmojis(emojiData, custom) {
+  allEmoji = Object.keys(emojiData).flatMap(category => emojiData[category]);
+  allEmoji.push(...custom);
+}
+
+function load() {
+  return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+}
+
+export function getRecents({ emojiData, custom = [] }) {
+  if (!allEmoji) {
+    flattenEmojis(emojiData, custom);
+  }
+
+  const recents = load();
+
+  return recents.map(recent => ({
+    ...recent,
+    name: getName(recent)
+  }));
 }
 
 export function save(emoji, options) {
   const recents = load();
 
   const recent = {
-    emoji: emoji.emoji,
-    name: emoji.name,
-    key: emoji.key || emoji.name,
-    custom: emoji.custom
+    emoji: emoji.emoji
   };
 
-  localStorage.setItem(
-    LOCAL_STORAGE_KEY,
-    JSON.stringify([recent, ...recents.filter(r => !!r.emoji && r.key !== recent.key)].slice(0, options.recentsCount))
-  );
+  if (emoji.custom) {
+    recent.custom = true;
+  }
+
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([recent, ...recents.filter(r => r.emoji !== emoji.emoji)].slice(0, options.recentsCount)));
 }

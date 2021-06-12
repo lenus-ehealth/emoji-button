@@ -10,6 +10,8 @@ import { Search } from './search';
 import { createElement, empty, findAllByClass } from './util';
 import { VariantPopup } from './variantPopup';
 
+import { emit as emitCustom } from './custom';
+
 import lazyLoad from './lazyLoad';
 
 import { i18n } from './i18n';
@@ -186,7 +188,11 @@ export class EmojiButton {
     } else {
       setTimeout(() => this.emojiArea.updateRecents());
 
-      this.publicEvents.emit(EMOJI, await this.renderer.emit(emoji));
+      if (emoji.custom) {
+        this.publicEvents.emit(EMOJI, emitCustom(emoji));
+      } else {
+        this.publicEvents.emit(EMOJI, await this.renderer.emit(emoji));
+      }
 
       if (this.options.autoHide) {
         this.hidePicker();

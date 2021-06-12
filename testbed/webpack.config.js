@@ -8,7 +8,7 @@ module.exports = {
   mode: 'development',
   target: 'web',
   devServer: {
-    contentBase: path.resolve(__dirname, 'dist'),
+    contentBase: path.resolve(__dirname, 'assets'),
     port: 9000
   },
   module: {
