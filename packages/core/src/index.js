@@ -35,7 +35,7 @@ import { PickerUIElement, EmojiCategory } from './constants';
 export { PickerUIElement, EmojiCategory };
 
 const DEFAULT_OPTIONS = {
-  position: 'auto',
+  placement: 'auto',
   autoHide: true,
   autoFocusSearch: true,
   showAnimation: true,
