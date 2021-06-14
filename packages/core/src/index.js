@@ -1,5 +1,7 @@
 import pkg from '../package.json';
 
+import classes from '../css/index.css';
+
 import { createFocusTrap } from 'focus-trap';
 import Events from './events';
 import { createPopper } from '@popperjs/core';
@@ -15,16 +17,6 @@ import { emit as emitCustom } from './custom';
 import lazyLoad from './lazyLoad';
 
 import { i18n } from './i18n';
-
-import {
-  CLASS_PICKER,
-  CLASS_PICKER_CONTENT,
-  CLASS_EMOJI,
-  CLASS_SEARCH_FIELD,
-  CLASS_WRAPPER,
-  CLASS_OVERLAY,
-  CLASS_PLUGIN_CONTAINER
-} from './classes';
 
 import { EmojiArea } from './emojiArea';
 
@@ -162,7 +154,7 @@ export class EmojiButton {
    */
   showSearchResults(searchResults) {
     empty(this.pickerContent);
-    searchResults.classList.add('search-results');
+    searchResults.classList.add(classes.searchResults);
     this.pickerContent.appendChild(searchResults);
   }
 
@@ -232,7 +224,7 @@ export class EmojiButton {
    */
   initPlugins() {
     if (this.options.plugins) {
-      const pluginContainer = createElement('div', CLASS_PLUGIN_CONTAINER);
+      const pluginContainer = createElement('div', classes.pluginContainer);
 
       this.options.plugins.forEach(plugin => {
         if (!plugin.render) {
@@ -253,8 +245,8 @@ export class EmojiButton {
       clickOutsideDeactivates: true,
       initialFocus:
         this.options.uiElements.includes(PickerUIElement.SEARCH) && this.options.autoFocusSearch
-          ? '.emoji-picker__search'
-          : '.emoji-picker__emoji[tabindex="0"]'
+          ? `.${classes.search}`
+          : `.${classes.emoji}[tabindex="0"]`
     });
   }
 
@@ -264,13 +256,13 @@ export class EmojiButton {
   buildPicker(renderer) {
     this.renderer = renderer;
 
-    this.pickerEl = createElement('div', CLASS_PICKER);
+    this.pickerEl = createElement('div', 'emoji-picker');
     this.pickerEl.classList.add(this.theme);
 
     this.setStyleProperties();
     this.initFocusTrap();
 
-    this.pickerContent = createElement('div', CLASS_PICKER_CONTENT);
+    this.pickerContent = createElement('div', classes.content);
 
     this.initPlugins();
     this.buildSearch();
@@ -291,7 +283,8 @@ export class EmojiButton {
 
     this.buildPreview();
 
-    this.wrapper = createElement('div', CLASS_WRAPPER);
+    this.wrapper = createElement('div');
+
     this.wrapper.appendChild(this.pickerEl);
     this.wrapper.style.display = 'none';
 
@@ -320,7 +313,7 @@ export class EmojiButton {
 
     this.events.once(HIDE_VARIANT_POPUP, () => {
       if (variantPopup) {
-        variantPopup.classList.add('hiding');
+        variantPopup.classList.add(classes.hiding);
         setTimeout(() => {
           variantPopup && this.pickerEl.removeChild(variantPopup);
         }, 175);
@@ -337,7 +330,7 @@ export class EmojiButton {
       root: this.emojiArea.emojis
     });
 
-    findAllByClass(this.emojiArea.emojis, CLASS_EMOJI).forEach(element => {
+    findAllByClass(this.emojiArea.emojis, classes.emoji).forEach(element => {
       if (this.shouldLazyLoad(element)) {
         this.observer.observe(element);
       }
@@ -424,14 +417,14 @@ export class EmojiButton {
     // and stealing the focus. Remove the scroll listener before doing the delayed hide.
     this.emojiArea.emojis.removeEventListener('scroll', this.emojiArea.highlightCategory);
 
-    this.pickerEl.classList.add('hiding');
+    this.pickerEl.classList.add(classes.hiding);
 
     // Let the transition finish before actually hiding the picker so that
     // the user sees the hide animation.
     setTimeout(
       () => {
         this.wrapper.style.display = 'none';
-        this.pickerEl.classList.remove('hiding');
+        this.pickerEl.classList.remove(classes.hiding);
 
         if (this.pickerContent.firstChild !== this.emojiArea.container) {
           empty(this.pickerContent);
@@ -509,8 +502,8 @@ export class EmojiButton {
     // the search field. Otherwise, the initial focus will be on the first focusable emoji.
     const initialFocusElement = this.pickerEl.querySelector(
       this.options.uiElements.includes(PickerUIElement.SEARCH) && this.options.autoFocusSearch
-        ? `.${CLASS_SEARCH_FIELD}`
-        : `.${CLASS_EMOJI}[tabindex="0"]`
+        ? `.${classes.search}`
+        : `.${classes.emoji}[tabindex="0"]`
     );
     initialFocusElement.focus();
   }
@@ -569,7 +562,7 @@ export class EmojiButton {
     this.wrapper.style.left = `${newLeft}px`;
     this.wrapper.style.zIndex = '5000';
 
-    this.overlay = createElement('div', CLASS_OVERLAY);
+    this.overlay = createElement('div', classes.overlay);
     document.body.appendChild(this.overlay);
   }
 

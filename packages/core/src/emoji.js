@@ -3,9 +3,10 @@ import { save } from './recent';
 import { createElement } from './util';
 import { render } from './render';
 
+import classes from '../css/index.css';
+
 import { smile } from './icons';
 
-import { CLASS_EMOJI } from './classes';
 import { PickerUIElement } from './constants';
 
 export class Emoji {
@@ -20,7 +21,7 @@ export class Emoji {
   }
 
   render() {
-    this.emojiButton = createElement('button', CLASS_EMOJI);
+    this.emojiButton = createElement('button', classes.emoji);
 
     const content = render(this.emoji, this.renderer, this.lazy && smile);
 

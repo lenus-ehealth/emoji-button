@@ -1,5 +1,6 @@
 import './index.css';
-import '@emoji-button/core/css/emoji-button.css';
+import '@emoji-button/core/themes/auto.css';
+import '@emoji-button/core/dist/main.css';
 
 // import compactEmojis from 'emojibase-data/en/compact.json';
 

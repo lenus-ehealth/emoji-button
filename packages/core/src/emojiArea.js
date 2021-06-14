@@ -1,13 +1,6 @@
 import { findByClass } from './util';
 
-import {
-  CLASS_CATEGORY_NAME_LABEL,
-  CLASS_EMOJI_CONTAINER,
-  CLASS_EMOJI,
-  CLASS_EMOJI_AREA,
-  CLASS_EMOJIS,
-  CLASS_CATEGORY_NAME
-} from './classes';
+import classes from '../css/index.css';
 
 import { CategoryButtons, categoryIcons } from './categoryButtons';
 import { EmojiContainer } from './emojiContainer';
@@ -49,7 +42,7 @@ export class EmojiArea {
   updateRecents() {
     if (this.options.uiElements.includes(PickerUIElement.RECENTS)) {
       this.recents = getRecents(this.options);
-      const recentsContainer = findByClass(this.emojis, CLASS_EMOJI_CONTAINER);
+      const recentsContainer = findByClass(this.emojis, classes.emojiContainer);
       if (recentsContainer?.parentNode) {
         recentsContainer.parentNode.replaceChild(
           new EmojiContainer(this.recents, this.renderer, true, this.events, this.options, false).render(),
@@ -60,14 +53,14 @@ export class EmojiArea {
   }
 
   render() {
-    this.container = createElement('div', CLASS_EMOJI_AREA);
+    this.container = createElement('div');
 
     if (this.showCategoryButtons) {
       this.categoryButtons = new CategoryButtons(this.options, this.events, this.i18n);
       this.container.appendChild(this.categoryButtons.render());
     }
 
-    this.emojis = createElement('div', CLASS_EMOJIS);
+    this.emojis = createElement('div', classes.emojis);
 
     if (this.options.uiElements.includes(PickerUIElement.RECENTS)) {
       this.recents = getRecents(this.options);
@@ -98,7 +91,7 @@ export class EmojiArea {
 
     this.container.appendChild(this.emojis);
 
-    const firstEmoji = findAllByClass(this.container, CLASS_EMOJI)[0];
+    const firstEmoji = findAllByClass(this.container, classes.emoji)[0];
     firstEmoji.tabIndex = 0;
 
     return this.container;
@@ -118,20 +111,20 @@ export class EmojiArea {
   }
 
   get currentCategoryEl() {
-    return findAllByClass(this.emojis, CLASS_EMOJI_CONTAINER)[this.currentCategory];
+    return findAllByClass(this.emojis, classes.emojiContainer)[this.currentCategory];
   }
 
   get focusedEmoji() {
-    return findAllByClass(this.currentCategoryEl, CLASS_EMOJI)[this.focusedIndex];
+    return findAllByClass(this.currentCategoryEl, classes.emoji)[this.focusedIndex];
   }
 
   get currentEmojiCount() {
-    return findAllByClass(this.currentCategoryEl, CLASS_EMOJI).length;
+    return findAllByClass(this.currentCategoryEl, classes.emoji).length;
   }
 
   getEmojiCount(category) {
-    const container = findAllByClass(this.emojis, CLASS_EMOJI_CONTAINER)[category];
-    return findAllByClass(container, CLASS_EMOJI).length;
+    const container = findAllByClass(this.emojis, classes.emojiContainer)[category];
+    return findAllByClass(container, classes.emoji).length;
   }
 
   handleKeyDown = event => {
@@ -223,14 +216,14 @@ export class EmojiArea {
   }
 
   addCategory = (category, emojis) => {
-    const nameEl = createElement('div', CLASS_CATEGORY_NAME);
+    const nameEl = createElement('div', classes.categoryName);
 
     const categoryName = this.i18n.categories[category];
 
     const icon = createElement('div');
     icon.innerHTML = categoryIcons[category];
 
-    const label = createElement('div', CLASS_CATEGORY_NAME_LABEL);
+    const label = createElement('div', classes.categoryNameLabel);
     label.innerHTML = categoryName;
 
     nameEl.appendChild(icon);

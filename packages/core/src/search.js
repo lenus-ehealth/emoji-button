@@ -1,18 +1,10 @@
 import * as icons from './icons';
 
+import classes from '../css/index.css';
+
 import { EmojiContainer } from './emojiContainer';
 import { HIDE_PREVIEW, HIDE_VARIANT_POPUP, SHOW_SEARCH_RESULTS, HIDE_SEARCH_RESULTS } from './events';
 import { createElement, empty, findByClass, findAllByClass } from './util';
-
-import {
-  CLASS_SEARCH_CONTAINER,
-  CLASS_SEARCH_FIELD,
-  CLASS_SEARCH_ICON,
-  CLASS_NOT_FOUND,
-  CLASS_NOT_FOUND_MESSAGE,
-  CLASS_NOT_FOUND_ICON,
-  CLASS_EMOJI
-} from './classes';
 
 class NotFoundMessage {
   constructor(message, iconUrl) {
@@ -21,9 +13,9 @@ class NotFoundMessage {
   }
 
   render() {
-    const container = createElement('div', CLASS_NOT_FOUND);
+    const container = createElement('div', classes.searchNotFound);
 
-    const iconContainer = createElement('div', CLASS_NOT_FOUND_ICON);
+    const iconContainer = createElement('div', classes.searchNotFoundIcon);
 
     if (this.iconUrl) {
       iconContainer.appendChild(icons.createIcon(this.iconUrl));
@@ -33,7 +25,7 @@ class NotFoundMessage {
 
     container.appendChild(iconContainer);
 
-    const messageContainer = createElement('div', CLASS_NOT_FOUND_MESSAGE);
+    const messageContainer = createElement('div', classes.searchNotFoundMessage);
     messageContainer.innerHTML = this.message;
     container.appendChild(messageContainer);
 
@@ -71,13 +63,13 @@ export class Search {
   }
 
   render() {
-    this.searchContainer = createElement('div', CLASS_SEARCH_CONTAINER);
+    this.searchContainer = createElement('div', classes.searchContainer);
 
-    this.searchField = createElement('input', CLASS_SEARCH_FIELD);
+    this.searchField = createElement('input', classes.search);
     this.searchField.placeholder = this.i18n.search;
     this.searchContainer.appendChild(this.searchField);
 
-    this.searchIcon = createElement('span', CLASS_SEARCH_ICON);
+    this.searchIcon = createElement('span', classes.searchIcon);
 
     if (this.options.icons && this.options.icons.search) {
       this.searchIcon.appendChild(icons.createIcon(this.options.icons.search));
@@ -127,7 +119,7 @@ export class Search {
 
   setFocusedEmoji(index) {
     if (this.resultsContainer) {
-      const emojis = findAllByClass(this.resultsContainer, CLASS_EMOJI);
+      const emojis = findAllByClass(this.resultsContainer, classes.emoji);
       const currentFocusedEmoji = emojis[this.focusedEmojiIndex];
       currentFocusedEmoji.tabIndex = -1;
 
@@ -140,7 +132,7 @@ export class Search {
 
   handleResultsKeydown(event) {
     if (this.resultsContainer) {
-      const emojis = findAllByClass(this.resultsContainer, CLASS_EMOJI);
+      const emojis = findAllByClass(this.resultsContainer, classes.emoji);
       if (event.key === 'ArrowRight') {
         this.setFocusedEmoji(Math.min(this.focusedEmojiIndex + 1, emojis.length - 1));
       } else if (event.key === 'ArrowLeft') {
@@ -204,7 +196,7 @@ export class Search {
         ).render();
 
         if (this.resultsContainer) {
-          findByClass(this.resultsContainer, CLASS_EMOJI).tabIndex = 0;
+          findByClass(this.resultsContainer, classes.emoji).tabIndex = 0;
           this.focusedEmojiIndex = 0;
 
           this.resultsContainer.addEventListener('keydown', event => this.handleResultsKeydown(event));

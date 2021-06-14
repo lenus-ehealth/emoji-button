@@ -1,6 +1,6 @@
-import { CLASS_CATEGORY_BUTTONS, CLASS_CATEGORY_BUTTON } from './classes';
-
 import { CATEGORY_CLICKED } from './events';
+
+import classes from '../css/index.css';
 
 import { EmojiCategory, PickerUIElement } from './constants';
 
@@ -32,7 +32,7 @@ export class CategoryButtons {
   }
 
   render() {
-    const container = createElement('div', CLASS_CATEGORY_BUTTONS);
+    const container = createElement('div', classes.categoryButtons);
 
     const categoryData = this.options.categories || this.options.emojiData?.categories;
 
@@ -45,7 +45,7 @@ export class CategoryButtons {
     }
 
     categories.forEach(category => {
-      const button = createElement('button', CLASS_CATEGORY_BUTTON);
+      const button = createElement('button', classes.categoryButton);
 
       if (this.options.icons && this.options.icons.categories && this.options.icons.categories[category]) {
         button.appendChild(icons.createIcon(this.options.icons.categories[category]));
@@ -86,13 +86,13 @@ export class CategoryButtons {
 
   setActiveButton(activeButton, focus = true) {
     let activeButtonEl = this.buttons[this.activeButton];
-    activeButtonEl.classList.remove('active');
+    activeButtonEl.classList.remove(classes.active);
     activeButtonEl.tabIndex = -1;
 
     this.activeButton = activeButton;
 
     activeButtonEl = this.buttons[this.activeButton];
-    activeButtonEl.classList.add('active');
+    activeButtonEl.classList.add(classes.active);
     activeButtonEl.tabIndex = 0;
 
     if (focus) {

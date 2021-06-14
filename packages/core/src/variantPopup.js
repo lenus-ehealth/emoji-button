@@ -3,7 +3,7 @@ import { createElement, findAllByClass, findByClass } from './util';
 
 import { HIDE_VARIANT_POPUP } from './events';
 
-import { CLASS_VARIANT_OVERLAY, CLASS_VARIANT_POPUP, CLASS_EMOJI } from './classes';
+import classes from '../css/index.css';
 
 export class VariantPopup {
   constructor(events, renderer, emoji, options) {
@@ -16,7 +16,7 @@ export class VariantPopup {
   }
 
   getEmoji(index) {
-    return findAllByClass(this.popup, CLASS_EMOJI)[index];
+    return findAllByClass(this.popup, classes.emoji)[index];
   }
 
   setFocusedEmoji(newIndex) {
@@ -30,9 +30,9 @@ export class VariantPopup {
   }
 
   render() {
-    this.popup = createElement('div', CLASS_VARIANT_POPUP);
+    this.popup = createElement('div', classes.variantPopup);
 
-    const overlay = createElement('div', CLASS_VARIANT_OVERLAY);
+    const overlay = createElement('div', classes.variantOverlay);
     overlay.addEventListener('click', event => {
       event.stopPropagation();
 
@@ -63,7 +63,7 @@ export class VariantPopup {
       )
     );
 
-    const firstEmoji = findByClass(this.popup, CLASS_EMOJI);
+    const firstEmoji = findByClass(this.popup, classes.emoji);
     this.focusedEmojiIndex = 0;
     firstEmoji.tabIndex = 0;
 
@@ -71,7 +71,7 @@ export class VariantPopup {
 
     this.popup.addEventListener('keydown', event => {
       if (event.key === 'ArrowRight') {
-        this.setFocusedEmoji(Math.min(this.focusedEmojiIndex + 1, findAllByClass(this.popup, CLASS_EMOJI).length - 1));
+        this.setFocusedEmoji(Math.min(this.focusedEmojiIndex + 1, findAllByClass(this.popup, classes.emoji).length - 1));
       } else if (event.key === 'ArrowLeft') {
         this.setFocusedEmoji(Math.max(this.focusedEmojiIndex - 1, 0));
       } else if (event.key === 'Escape') {

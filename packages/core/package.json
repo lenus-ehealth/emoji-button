@@ -24,10 +24,17 @@
   "license": "MIT",
   "files": [
     "dist",
-    "css"
+    "themes"
   ],
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-regular-svg-icons": "^5.15.3",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@popperjs/core": "^2.9.2",
     "focus-trap": "^6.4.0"
+  },
+  "devDependencies": {
+    "css-loader": "^5.2.6",
+    "mini-css-extract-plugin": "^1.6.0"
   }
 }

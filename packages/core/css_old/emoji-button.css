@@ -69,7 +69,7 @@
   --emoji-per-row: 8;
   --row-count: 6;
 
-  --content-height: calc((var(--emoji-size) * var(--emoji-size-multiplier)) * var(--row-count) + var(--category-name-size) + var(--category-button-height) + 0.5em);
+  --content-height: 22rem;
 
   --category-name-size: 1.2em;
 
@@ -374,7 +374,7 @@
 .emoji-picker__emojis {
   overflow-y: auto;
   position: relative;
-  height: calc((var(--emoji-size) * var(--emoji-size-multiplier)) * var(--row-count) + var(--category-name-size));
+  height: calc(var(--content-height) - var(--category-button-height));
 }
 
 .emoji-picker__emojis.hiding {
