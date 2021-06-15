@@ -10,7 +10,16 @@ import {
   faTimes,
   faUser
 } from '@fortawesome/free-solid-svg-icons';
-import { faBuilding, faFlag, faFrown, faLightbulb, faSmile, faTimesCircle } from '@fortawesome/free-regular-svg-icons';
+
+import { 
+  faBuilding, 
+  faFlag, 
+  faFrown, 
+  faImage,
+  faLightbulb, 
+  faSmile, 
+  faTimesCircle 
+} from '@fortawesome/free-regular-svg-icons';
 
 library.add(
   faBuilding,
@@ -21,6 +30,7 @@ library.add(
   faFutbol,
   faHistory,
   faIcons,
+  faImage,
   faLightbulb,
   faMusic,
   faSearch,
@@ -38,6 +48,7 @@ export const futbol = buildIcon('fas', 'futbol');
 export const frown = buildIcon('far', 'frown');
 export const history = buildIcon('fas', 'history');
 export const icons = buildIcon('fas', 'icons');
+export const image = buildIcon('far', 'image');
 export const lightbulb = buildIcon('far', 'lightbulb');
 export const music = buildIcon('fas', 'music');
 export const search = buildIcon('fas', 'search');

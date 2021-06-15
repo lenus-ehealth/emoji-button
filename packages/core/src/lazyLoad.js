@@ -7,7 +7,7 @@ export default function lazyLoad(element, renderer) {
     } else {
       renderer.lazyLoad(element);
       element.dataset.loaded = 'true';
-      element.style.opacity = '1';
+      // element.style.opacity = '1';
     }
   }
 }

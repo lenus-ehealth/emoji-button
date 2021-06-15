@@ -48,6 +48,7 @@ const twemoji = document.querySelector('#twemoji .emoji-button');
 createPicker(
   twemoji,
   {
+    theme: darkTheme,
     placement: 'bottom-start',
     emojiData,
     renderer: new TwemojiRenderer()

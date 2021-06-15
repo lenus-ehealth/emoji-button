@@ -56,3 +56,8 @@ export const customEmoji = css`
   width: 1em;
   height: 1em;
 `;
+
+export const imagePlaceholder = css`
+  color: var(--image-placeholder-color);
+  opacity: 0.1;
+`;

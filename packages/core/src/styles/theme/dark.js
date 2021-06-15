@@ -14,6 +14,8 @@ export default css`
 
   --focus-indicator-color: #999999;
 
+  --image-placeholder-color: #ffffff;
+  
   --search-background-color: #666666;
   --search-border-color: #999999;
   --search-focus-border-color: #dbe5f9;

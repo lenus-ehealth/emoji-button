@@ -2,7 +2,7 @@ import * as classes from './styles';
 
 import { createElement } from './util';
 
-import { smile } from './icons';
+import { image } from './icons';
 
 export function emit(emoji) {
   return {
@@ -13,7 +13,7 @@ export function emit(emoji) {
 }
 
 export function renderCustom(emoji, lazy) {
-  return lazy ? smile : `<img class="${classes.customEmoji}" src="${emoji.emoji}">`;
+  return lazy ? `<div class="${classes.imagePlaceholder}">${image}</div>` : `<img class="${classes.customEmoji}" src="${emoji.emoji}">`;
 }
 
 export function lazyLoadCustom(element) {

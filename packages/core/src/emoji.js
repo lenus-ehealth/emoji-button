@@ -5,9 +5,11 @@ import { render } from './render';
 
 import * as classes from './styles';
 
-import { smile } from './icons';
+import { image } from './icons';
 
 import { PickerUIElement } from './constants';
+
+const placeholder = `<div class="${classes.imagePlaceholder}">${image}</div>`;
 
 export class Emoji {
   constructor(emoji, renderer, showVariants, showPreview, events, options, lazy = true) {
@@ -23,7 +25,7 @@ export class Emoji {
   render() {
     this.emojiButton = createElement('button', classes.emoji);
 
-    const content = render(this.emoji, this.renderer, this.lazy && smile);
+    const content = render(this.emoji, this.renderer, this.lazy && placeholder);
 
     this.emojiButton.innerHTML = content;
     this.emojiButton.tabIndex = -1;
@@ -40,9 +42,9 @@ export class Emoji {
     this.emojiButton.addEventListener('mouseover', () => this.onEmojiHover());
     this.emojiButton.addEventListener('mouseout', () => this.onEmojiLeave());
 
-    if (this.renderer.lazyLoad && this.lazy) {
-      this.emojiButton.style.opacity = '0.1';
-    }
+    // if (this.renderer.lazyLoad && this.lazy) {
+    //   this.emojiButton.style.opacity = '0.1';
+    // }
 
     return this.emojiButton;
   }
