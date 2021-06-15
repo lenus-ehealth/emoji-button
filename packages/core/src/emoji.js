@@ -3,7 +3,7 @@ import { save } from './recent';
 import { createElement } from './util';
 import { render } from './render';
 
-import classes from '../css/index.css';
+import * as classes from './styles';
 
 import { smile } from './icons';
 

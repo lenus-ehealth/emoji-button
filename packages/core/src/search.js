@@ -1,6 +1,6 @@
 import * as icons from './icons';
 
-import classes from '../css/index.css';
+import * as classes from './styles';
 
 import { EmojiContainer } from './emojiContainer';
 import { HIDE_PREVIEW, HIDE_VARIANT_POPUP, SHOW_SEARCH_RESULTS, HIDE_SEARCH_RESULTS } from './events';

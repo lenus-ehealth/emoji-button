@@ -1,7 +1,7 @@
 import { SHOW_PREVIEW, HIDE_PREVIEW } from './events';
 import { createElement } from './util';
 
-import classes from '../css/index.css';
+import * as classes from './styles';
 
 import { render } from './render';
 

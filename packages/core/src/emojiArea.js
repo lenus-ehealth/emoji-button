@@ -1,6 +1,6 @@
 import { findByClass } from './util';
 
-import classes from '../css/index.css';
+import * as classes from './styles';
 
 import { CategoryButtons, categoryIcons } from './categoryButtons';
 import { EmojiContainer } from './emojiContainer';

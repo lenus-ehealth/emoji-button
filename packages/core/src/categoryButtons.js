@@ -1,6 +1,6 @@
 import { CATEGORY_CLICKED } from './events';
 
-import classes from '../css/index.css';
+import * as classes from './styles';
 
 import { EmojiCategory, PickerUIElement } from './constants';
 
@@ -86,13 +86,13 @@ export class CategoryButtons {
 
   setActiveButton(activeButton, focus = true) {
     let activeButtonEl = this.buttons[this.activeButton];
-    activeButtonEl.classList.remove(classes.active);
+    activeButtonEl.classList.remove('active');
     activeButtonEl.tabIndex = -1;
 
     this.activeButton = activeButton;
 
     activeButtonEl = this.buttons[this.activeButton];
-    activeButtonEl.classList.add(classes.active);
+    activeButtonEl.classList.add('active');
     activeButtonEl.tabIndex = 0;
 
     if (focus) {

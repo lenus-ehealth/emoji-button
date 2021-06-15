@@ -3,7 +3,7 @@ import { createElement, findAllByClass, findByClass } from './util';
 
 import { HIDE_VARIANT_POPUP } from './events';
 
-import classes from '../css/index.css';
+import * as classes from './styles';
 
 export class VariantPopup {
   constructor(events, renderer, emoji, options) {

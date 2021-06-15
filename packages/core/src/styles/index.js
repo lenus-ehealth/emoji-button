@@ -1,4 +1,6 @@
-/* @keyframes show {
+import { css, keyframes } from '@emotion/css';
+
+const show = keyframes`
   0% {
     opacity: 0;
     transform: scale3d(0.8, 0.8, 0.8);
@@ -11,9 +13,9 @@
   100% {
     transform: scale3d(1, 1, 1);
   }
-} */
+`;
 
-/* @keyframes hide {
+const hide = keyframes`
   0% {
     opacity: 1;
     transform: scale3d(1, 1, 1);
@@ -23,9 +25,9 @@
     opacity: 0;
     transform: scale3d(0.8, 0.8, 0.8);
   }
-} */
+`;
 
-@keyframes grow {
+const grow = keyframes`
   0% {
     opacity: 0;
     transform: scale3d(0.8, 0.8, 0.8); 
@@ -35,9 +37,9 @@
     opacity: 1;
     transform: scale3d(1, 1, 1); 
   }
-}
+`;
 
-@keyframes shrink {
+const shrink = keyframes`
   0% { 
     opacity: 1;
     transform: scale3d(1, 1, 1);
@@ -47,23 +49,23 @@
     opacity: 0;
     transform: scale3d(0.8, 0.8, 0.8); 
   }
-}
+`;
 
-@keyframes fade-in {
+const fadeIn = keyframes`
   0% { opacity: 0; }
   100% { opacity: 1; }
-}
+`;
 
-@keyframes fade-out {
+const fadeOut = keyframes`
   0% { opacity: 1; }
   100% { opacity: 0; }
-}
+`;
 
-/* :global .emoji-picker {
+export const picker = css`
   --animation-duration: 0.2s;
   --animation-easing: ease-in-out;
 
-  --blue-color: #4F81E5;
+  --blue-color: #4f81e5;
 
   --border-radius: 5px;
   --content-height: 22rem;
@@ -81,9 +83,11 @@
 
   --overlay-background-color: rgba(0, 0, 0, 0.8);
 
-  --emoji-font: "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji", "Twemoji Mozilla", "Noto Color Emoji", "EmojiOne Color", "Android Emoji";
+  --emoji-font: 'Segoe UI Emoji', 'Segoe UI Symbol', 'Segoe UI', 'Apple Color Emoji', 'Twemoji Mozilla',
+    'Noto Color Emoji', 'EmojiOne Color', 'Android Emoji';
   --ui-font: Arial, Helvetica, sans-serif;
 
+  animation: ${show} var(--animation-duration) var(--animation-easing);
   background: var(--background-color);
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
@@ -92,22 +96,18 @@
   overflow: hidden;
   position: relative;
   width: calc(var(--emoji-per-row) * var(--emoji-size) * var(--emoji-size-multiplier) + 1em + 1.5rem);
-}
 
-:global .emoji-picker :local {
-  animation: show var(--animation-duration) var(--animation-easing);
-}
+  &.hiding {
+    animation: ${hide} var(--animation-duration) var(--animation-easing);
+  }
 
-:global .emoji-picker * {
-  font-family: var(--ui-font);
-  box-sizing: content-box;
-}
+  & > * {
+    font-family: var(--ui-font);
+    box-sizing: content-box;
+  }
+`;
 
-:global .emoji-picker:local(.hiding) :local {
-  animation: hide var(--animation-duration) var(--animation-easing);
-} */
-
-.overlay {
+export const overlay = css`
   background: rgba(0, 0, 0, 0.75);
   height: 100%;
   left: 0;
@@ -115,61 +115,61 @@
   top: 0;
   width: 100%;
   z-index: 1000;
-}
+`;
 
-.content {
+export const content = css`
   height: var(--content-height);
   padding: 0.5em;
   position: relative;
-}
+`;
 
-.preview {
+export const preview = css`
   align-items: center;
   border-top: 1px solid var(--border-color);
   display: flex;
   flex-direction: row;
   height: var(--emoji-preview-size);
   padding: 0.5em;
-}
+`;
 
-.preview-emoji {
+export const previewEmoji = css`
   font-size: var(--emoji-preview-size);
   margin-right: 0.25em;
   font-family: var(--emoji-font);
-}
 
-:global img.emoji {
-  height: 1em;
-  width: 1em;
-  margin: 0 .05em 0 .1em;
-  vertical-align: -0.1em;
-}
+  img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 0.05em 0 0.1em;
+    vertical-align: -0.1em;
+  }
+`;
 
-.preview-name {
+export const previewName = css`
   color: var(--text-color);
   font-size: 0.85em;
   overflow-wrap: break-word;
   word-break: break-all;
-}
+`;
 
-.emoji-container {
+export const emojiContainer = css`
   display: grid;
   justify-content: space-between;
   grid-template-columns: repeat(var(--emoji-per-row), calc(var(--emoji-size) * var(--emoji-size-multiplier)));
   grid-auto-rows: calc(var(--emoji-size) * var(--emoji-size-multiplier));
-}
+`;
 
-.search-results {
+export const searchResults = css`
   height: var(--content-height);
   overflow-y: auto;
-}
+`;
 
-.custom-emoji {
+export const customEmoji = css`
   width: 1em;
   height: 1em;
-}
+`;
 
-.emoji {
+export const emoji = css`
   align-items: center;
   background: transparent;
   border: none;
@@ -184,30 +184,38 @@
   overflow: hidden;
   padding: 0;
   width: 1.5em;
-}
 
-.emoji:focus, .emoji:hover {
-  background: var(--hover-color);
-}
+  img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 0.05em 0 0.1em;
+    vertical-align: -0.1em;
+  }
 
-.emoji:focus {
-  outline: 1px dotted var(--focus-indicator-color);
-}
+  &:focus {
+    outline: 1px dotted var(--focus-indicator-color);
+  }
 
-.plugin-container {
+  &:focus,
+  &:hover {
+    background: var(--hover-color);
+  }
+`;
+
+export const pluginContainer = css`
   margin: 0.5em;
   display: flex;
   flex-direction: row;
-}
+`;
 
-.search-container {
+export const searchContainer = css`
   display: flex;
   height: var(--search-height);
   margin: 0.5em;
   position: relative;
-}
+`;
 
-.search {
+export const search = css`
   background: var(--search-background-color);
   border-radius: 3px;
   border: 1px solid var(--border-color);
@@ -218,61 +226,61 @@
   padding-right: 2em;
   padding: 0.5em 2.25em 0.5em 0.5em;
   width: 100%;
-}
 
-.search::placeholder {
-  color: var(--search-placeholder-color);
-}
+  &:focus {
+    border: 1px solid var(--search-focus-border-color);
+  }
 
-.search:focus {
-  border: 1px solid var(--search-focus-border-color);
-}
+  &::placeholder {
+    color: var(--search-placeholder-color);
+  }
+`;
 
-.search-icon {
+export const searchIcon = css`
   color: var(--search-icon-color);
   height: 1em;
   position: absolute;
   right: 0.75em;
   top: calc(50% - 0.5em);
   width: 1em;
-}
 
-.search-icon img {
-  width: 1em;
-  height: 1em;
-}
+  img {
+    width: 1em;
+    height: 1em;
+  }
+`;
 
-.search-not-found {
+export const searchNotFound = css`
   color: var(--secondary-text-color);
   display: flex;
   flex-direction: column;
   height: 100%;
   justify-content: center;
   text-align: center;
-}
 
-.search-not-found div {
-  color: var(--secondary-text-color);
-}
+  div {
+    color: var(--secondary-text-color);
+  }
+`;
 
-.search-not-found-message {
+export const searchNotFoundMessage = css`
   color: var(--secondary-text-color);
   font-size: 1.25em;
   font-weight: bold;
   margin: 0.5em 0;
-}
+`;
 
-.search-not-found-icon {
+export const searchNotFoundIcon = css`
   font-size: 3em;
-}
 
-.search-not-found-icon img {
-  width: 1em;
-  height: 1em;
-}
+  img {
+    width: 1em;
+    height: 1em;
+  }
+`;
 
-.variant-overlay {
-  animation: fade-in var(--animation-duration) var(--animation-easing);
+export const variantOverlay = css`
+  animation: ${fadeIn} var(--animation-duration) var(--animation-easing);
   background: var(--overlay-background-color);
   border-radius: 5px;
   display: flex;
@@ -283,37 +291,37 @@
   position: absolute;
   top: 0;
   width: 100%;
-}
 
-.variant-overlay.hiding {
-  animation: fade-out var(--animation-duration) var(--animation-easing);
-}
+  &.hiding {
+    animation: ${fadeOut} var(--animation-duration) var(--animation-easing);
 
-.variant-popup {
-  animation: grow var(--animation-duration) var(--animation-easing);
+    div {
+      animation: ${shrink} var(--animation-duration) var(--animation-easing);
+    }
+  }
+`;
+
+export const variantPopup = css`
+  animation: ${grow} var(--animation-duration) var(--animation-easing);
   background: var(--popup-background-color);
   border-radius: 5px;
   margin: 0.5em;
   padding: 0.5em;
   text-align: center;
   user-select: none;
-}
+`;
 
-.variant-overlay.hiding .variant-popup {
-  animation: shrink var(--animation-duration) var(--animation-easing);
-}
-
-.emojis {
+export const emojis = css`
   height: calc(var(--content-height) - var(--category-button-height));
   overflow-y: auto;
   position: relative;
-}
 
-.emojis.hiding {
-  animation: fade-out 0.05s var(--animation-easing);
-}
+  &.hiding {
+    animation: ${fadeOut} 0.05s var(--animation-easing);
+  }
+`;
 
-.emojis .category-name {
+export const categoryName = css`
   align-items: center;
   color: var(--secondary-text-color);
   display: flex;
@@ -321,44 +329,43 @@
   font-weight: bold;
   margin: 0.5em 0;
   text-align: left;
-}
+`;
 
-.emojis .category-name .category-name-label {
+export const categoryNameLabel = css`
   margin-left: 0.25em;
-}
+`;
 
-.category-buttons {
+export const categoryButtons = css`
   display: flex;
   flex-direction: row;
   height: var(--category-button-height);
   justify-content: space-around;
   margin-bottom: 0.5em;
-}
+`;
 
-button.category-button {
+export const categoryButton = css`
   background: transparent;
-  border-bottom: var(--category-border-bottom-size) solid transparent;
   border: none;
+  border-bottom: var(--category-border-bottom-size) solid transparent;
   color: var(--category-button-color);
   cursor: pointer;
   flex-grow: 1;
   font-size: var(--category-button-size);
-  outline: none;
+  /* outline: none; */
   padding: 0;
   vertical-align: middle;
-}
 
-button.category-button img {
-  width: var(--category-button-size);
-  height: var(--category-button-size);
-}
+  img {
+    width: var(--category-button-size);
+    height: var(--category-button-size);
+  }
 
-.keyboard button.category-button:focus {
-  outline: 1px dotted var(--focus-indicator-color);
-}
+  &:focus {
+    outline: 1px dotted var(--focus-indicator-color);
+  }
 
- button.category-button.active {
-  color: var(--category-button-active-color);
-  border-bottom: var(--category-border-bottom-size) solid var(--category-button-active-color);
- }
- 
+  &.active {
+    color: var(--category-button-active-color);
+    border-bottom: var(--category-border-bottom-size) solid var(--category-button-active-color);
+  }
+`;

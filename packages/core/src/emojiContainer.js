@@ -1,7 +1,7 @@
 import { Emoji } from './emoji';
 import { createElement } from './util';
 
-import classes from '../css/index.css';
+import * as classes from './styles';
 
 export class EmojiContainer {
   constructor(emojis, renderer, showVariants, events, options, lazy = true) {

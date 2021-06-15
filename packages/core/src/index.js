@@ -1,6 +1,8 @@
 import pkg from '../package.json';
 
-import classes from '../css/index.css';
+import lightTheme from './styles/theme/light';
+
+import * as classes from './styles';
 
 import { createFocusTrap } from 'focus-trap';
 import Events from './events';
@@ -33,7 +35,7 @@ const DEFAULT_OPTIONS = {
   showAnimation: true,
   recentsCount: 50,
   emojiVersion: 13,
-  theme: 'light',
+  theme: lightTheme,
   uiElements: [
     PickerUIElement.PREVIEW,
     PickerUIElement.SEARCH,
@@ -123,6 +125,12 @@ export class EmojiButton {
    * Sets any CSS variable values that need to be set.
    */
   setStyleProperties() {
+    if (this.options.themeOverrides) {
+      Object.keys(this.options.themeOverrides).forEach(styleVar => {
+        this.pickerEl.style.setProperty(styleVar, this.options.themeOverrides[styleVar]);
+      });
+    }
+
     if (!this.options.showAnimation) {
       this.pickerEl.style.setProperty('--animation-duration', '0s');
     }
@@ -224,7 +232,7 @@ export class EmojiButton {
    */
   initPlugins() {
     if (this.options.plugins) {
-      const pluginContainer = createElement('div', classes.pluginContainer);
+      const pluginContainer = createElement('div', pluginContainer);
 
       this.options.plugins.forEach(plugin => {
         if (!plugin.render) {
@@ -257,6 +265,7 @@ export class EmojiButton {
     this.renderer = renderer;
 
     this.pickerEl = createElement('div', 'emoji-picker');
+    this.pickerEl.classList.add(classes.picker);
     this.pickerEl.classList.add(this.theme);
 
     this.setStyleProperties();
@@ -313,10 +322,10 @@ export class EmojiButton {
 
     this.events.once(HIDE_VARIANT_POPUP, () => {
       if (variantPopup) {
-        variantPopup.classList.add(classes.hiding);
+        variantPopup.classList.add('hiding');
         setTimeout(() => {
           variantPopup && this.pickerEl.removeChild(variantPopup);
-        }, 175);
+        }, 200);
       }
     });
   }
@@ -417,14 +426,14 @@ export class EmojiButton {
     // and stealing the focus. Remove the scroll listener before doing the delayed hide.
     this.emojiArea.emojis.removeEventListener('scroll', this.emojiArea.highlightCategory);
 
-    this.pickerEl.classList.add(classes.hiding);
+    this.pickerEl.classList.add('hiding');
 
     // Let the transition finish before actually hiding the picker so that
     // the user sees the hide animation.
     setTimeout(
       () => {
         this.wrapper.style.display = 'none';
-        this.pickerEl.classList.remove(classes.hiding);
+        this.pickerEl.classList.remove('hiding');
 
         if (this.pickerContent.firstChild !== this.emojiArea.container) {
           empty(this.pickerContent);
@@ -461,6 +470,8 @@ export class EmojiButton {
       setTimeout(() => this.showPicker(referenceEl), 100);
       return;
     }
+
+    this.emojiArea.updateRecents()
 
     this.pickerVisible = true;
     this.wrapper.style.display = 'block';

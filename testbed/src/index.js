@@ -1,8 +1,7 @@
 import './index.css';
-import '@emoji-button/core/themes/auto.css';
-import '@emoji-button/core/dist/main.css';
 
-// import compactEmojis from 'emojibase-data/en/compact.json';
+import lightTheme from '@emoji-button/core/dist/themes/light';
+import darkTheme from '@emoji-button/core/dist/themes/dark';
 
 import { EmojiButton, EmojiCategory, PickerUIElement } from '@emoji-button/core';
 import NativeRenderer from '@emoji-button/renderer-native';
@@ -11,22 +10,21 @@ import emojiData from '@emoji-button/emoji-data/dist/en';
 
 document.querySelector('#version').innerHTML = `v${EmojiButton.version}`;
 
-// console.log(compactEmojis);
-
-// console.log(categories);
-
 function createPicker(button, options, onEmoji) {
   const picker = new EmojiButton(options);
   picker.on('emoji', data => {
     onEmoji(data);
   });
   button.addEventListener('click', () => picker.togglePicker(button));
+
+  return picker;
 }
 
 const native = document.querySelector('#native .emoji-button');
 createPicker(
   native,
   {
+    theme: lightTheme,
     placement: 'bottom-start',
     emojiData,
     custom: [
@@ -38,8 +36,6 @@ createPicker(
     renderer: new NativeRenderer()
   },
   ({ url, emoji }) => {
-    // console.log(selection);
-    // console.log(url);
     if (url) {
       native.innerHTML = `<img src="${url}" />`;
     } else {
@@ -48,14 +44,14 @@ createPicker(
   }
 );
 
-// const twemoji = document.querySelector('#twemoji .emoji-button');
-// createPicker(
-//   twemoji,
-//   {
-//     emojiData,
-//     renderer: new TwemojiRenderer()
-//   },
-//   ({ url }) => {
-//     twemoji.innerHTML = `<img src="${url}" />`;
-//   }
-// );
+const twemoji = document.querySelector('#twemoji .emoji-button');
+createPicker(
+  twemoji,
+  {
+    emojiData,
+    renderer: new TwemojiRenderer()
+  },
+  ({ url }) => {
+    twemoji.innerHTML = `<img src="${url}" />`;
+  }
+);

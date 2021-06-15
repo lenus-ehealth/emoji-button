@@ -1,4 +1,6 @@
-.emoji-picker {
+import { css } from '@emotion/css';
+
+export default css`
   --background-color: #ffffff;
   --border-color: #cccccc;
 
@@ -19,4 +21,4 @@
   --search-placeholder-color: #999999;
 
   --popup-background-color: #ffffff;
-}
+`;

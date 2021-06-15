@@ -1,4 +1,4 @@
-import classes from '../css/index.css';
+import * as classes from './styles';
 
 import { createElement } from './util';
 
