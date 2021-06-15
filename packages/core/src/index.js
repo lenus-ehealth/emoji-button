@@ -497,7 +497,7 @@ export class EmojiButton {
   determineDisplay(referenceEl) {
     if (window.matchMedia(`screen and (max-width: ${MOBILE_BREAKPOINT}px)`).matches) {
       this.showMobileView();
-    } else if (typeof this.options.position === 'string') {
+    } else if (typeof this.options.placement === 'string') {
       this.setRelativePosition(referenceEl);
     } else {
       this.setFixedPosition();
@@ -534,7 +534,7 @@ export class EmojiButton {
    */
   setRelativePosition(referenceEl) {
     this.popper = createPopper(referenceEl, this.wrapper, {
-      placement: this.options.position
+      placement: this.options.placement
     });
   }
 
