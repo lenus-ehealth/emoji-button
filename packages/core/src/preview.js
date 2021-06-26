@@ -1,9 +1,15 @@
 import { SHOW_PREVIEW, HIDE_PREVIEW } from './events';
-import { createElement } from './util';
-
-import * as classes from './styles';
 
 import { render } from './render';
+
+import renderTemplate from './renderTemplate';
+
+const template = `
+  <div class="{{classes.preview}}">
+    <div class="{{classes.previewEmoji}}"></div>
+    <div class="{{classes.previewName}}">{{name}}</div>
+  </div>
+`;
 
 export class EmojiPreview {
   constructor(events, renderer, options) {
@@ -13,13 +19,8 @@ export class EmojiPreview {
   }
 
   render() {
-    const preview = createElement('div', classes.preview);
-
-    this.emoji = createElement('div', classes.previewEmoji);
-    preview.appendChild(this.emoji);
-
-    this.name = createElement('div', classes.previewName);
-    preview.appendChild(this.name);
+    const preview = renderTemplate(template);
+    [this.emoji, this.name] = preview.children;
 
     this.events.bindEvents(
       {
@@ -33,12 +34,12 @@ export class EmojiPreview {
   }
 
   showPreview(emoji) {
-    this.emoji.innerHTML = render(emoji, this.renderer);
+    this.emoji.replaceChildren(render(emoji, this.renderer));
     this.name.innerHTML = emoji.name;
   }
 
   hidePreview() {
-    this.emoji.innerHTML = '';
-    this.name.innerHTML = '';
+    this.emoji.replaceChildren();
+    this.name.replaceChildren();
   }
 }

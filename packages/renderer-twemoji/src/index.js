@@ -32,7 +32,14 @@ export default class TwemojiRenderer {
   }
 
   render({ emoji }, lazyPlaceholder) {
-    return lazyPlaceholder || twemoji.parse(emoji, this.options);
+    if (lazyPlaceholder) {
+      return lazyPlaceholder;
+    }
+
+    return document
+      .createRange()
+      .createContextualFragment(twemoji.parse(emoji, this.options))
+      .firstElementChild;
   }
 
   lazyLoad(element) {

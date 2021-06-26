@@ -13,6 +13,7 @@ import { EmojiPreview } from './preview';
 import { Search } from './search';
 import { createElement, empty, findAllByClass } from './util';
 import { VariantPopup } from './variantPopup';
+import { listenForEmojis } from './recent';
 
 import { emit as emitCustom } from './custom';
 
@@ -280,6 +281,8 @@ export class EmojiButton {
 
     this.emojiArea = new EmojiArea(this.events, this.renderer, this.i18n, this.options);
     this.pickerContent.appendChild(this.emojiArea.render());
+
+    listenForEmojis(this.events, this.options);
 
     this.cleanupEvents = this.events.bindEvents(
       {

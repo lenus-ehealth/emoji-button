@@ -1,8 +1,10 @@
 import * as classes from './styles';
 
 import { createElement } from './util';
+import renderTemplate from './renderTemplate';
+import getPlaceholder from './placeholder';
 
-import { image } from './icons';
+const template = '<img class="{{classes.customEmoji}}" src="{{emoji.emoji}}">';
 
 export function emit(emoji) {
   return {
@@ -13,7 +15,7 @@ export function emit(emoji) {
 }
 
 export function renderCustom(emoji, lazy) {
-  return lazy ? `<div class="${classes.imagePlaceholder}">${image}</div>` : `<img class="${classes.customEmoji}" src="${emoji.emoji}">`;
+  return lazy ? getPlaceholder() : renderTemplate(template, { emoji });
 }
 
 export function lazyLoadCustom(element) {

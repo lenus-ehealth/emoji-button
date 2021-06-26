@@ -1,4 +1,4 @@
-import { Emoji } from './emoji';
+import { renderEmoji } from './emoji';
 import { createElement, findAllByClass, findByClass } from './util';
 
 import { HIDE_VARIANT_POPUP } from './events';
@@ -42,12 +42,12 @@ export class VariantPopup {
     });
 
     this.popup.appendChild(
-      new Emoji(this.emoji, this.renderer, false, false, this.events, this.options, false).render()
+      renderEmoji(this.emoji, this.renderer, false, false, this.events, false)
     );
 
     (this.emoji.variations || []).forEach((variation, index) =>
       this.popup.appendChild(
-        new Emoji(
+        renderEmoji(
           {
             name: this.emoji.name,
             emoji: variation,
@@ -57,9 +57,8 @@ export class VariantPopup {
           false,
           false,
           this.events,
-          this.options,
           false
-        ).render()
+        )
       )
     );
 

@@ -1,7 +1,8 @@
-import { Emoji } from './emoji';
-import { createElement } from './util';
+import { renderEmoji } from './emoji';
 
-import * as classes from './styles';
+import renderTemplate from './renderTemplate';
+
+const template = '<div class="{{classes.emojiContainer}}"></div>';
 
 export class EmojiContainer {
   constructor(emojis, renderer, showVariants, events, options, lazy = true) {
@@ -15,10 +16,11 @@ export class EmojiContainer {
   }
 
   render() {
-    const emojiContainer = createElement('div', classes.emojiContainer);
+    const emojiContainer = renderTemplate(template);
+
     this.emojis.forEach(emoji =>
       emojiContainer.appendChild(
-        new Emoji(emoji, this.renderer, this.showVariants, true, this.events, this.options, this.lazy).render()
+        renderEmoji(emoji, this.renderer, this.showVariants, true, this.events, this.lazy)
       )
     );
 

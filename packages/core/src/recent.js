@@ -1,3 +1,7 @@
+import { EMOJI } from './events';
+
+import { PickerUIElement } from './constants';
+
 const LOCAL_STORAGE_KEY = 'EmojiButton.recent';
 
 let allEmoji;
@@ -41,4 +45,14 @@ export function save(emoji, options) {
   }
 
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([recent, ...recents.filter(r => r.emoji !== emoji.emoji)].slice(0, options.recentsCount)));
+}
+
+export function listenForEmojis(events, options) {
+  if (options.uiElements.includes(PickerUIElement.RECENTS)) {
+    events.on(EMOJI, ({ emoji, showVariants }) => {
+      if (!emoji.variations || !showVariants || !options.uiElements.includes(PickerUIElement.VARIANTS)) {
+        save(emoji, options);
+      }
+    });
+  }
 }

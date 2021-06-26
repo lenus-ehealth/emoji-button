@@ -1,79 +1,38 @@
 import { EMOJI, HIDE_PREVIEW, SHOW_PREVIEW } from './events';
-import { save } from './recent';
-import { createElement } from './util';
 import { render } from './render';
+import renderTemplate from './renderTemplate';
+import getPlaceholder from './placeholder';
 
-import * as classes from './styles';
+const template = `
+  <button 
+    class="{{classes.emoji}}" 
+    title="{{emoji.name}}" 
+    data-emoji="{{emoji.emoji}}"
+    tabindex="-1">
+  </button>
+`;
 
-import { image } from './icons';
+export function renderEmoji(emoji, renderer, showVariants, showPreview, events, lazy = true) {
+  const button = renderTemplate(template, { emoji });
+  button.appendChild(render(emoji, renderer, lazy && getPlaceholder()));
 
-import { PickerUIElement } from './constants';
-
-const placeholder = `<div class="${classes.imagePlaceholder}">${image}</div>`;
-
-export class Emoji {
-  constructor(emoji, renderer, showVariants, showPreview, events, options, lazy = true) {
-    this.emoji = emoji;
-    this.renderer = renderer;
-    this.showVariants = showVariants;
-    this.showPreview = showPreview;
-    this.events = events;
-    this.options = options;
-    this.lazy = lazy;
+  if (emoji.custom) {
+    button.dataset.custom = 'true';
   }
 
-  render() {
-    this.emojiButton = createElement('button', classes.emoji);
+  button.addEventListener('click', () => {
+    events.emit(EMOJI, { emoji, showVariants, button });
+  });
 
-    const content = render(this.emoji, this.renderer, this.lazy && placeholder);
+  if (showPreview) {
+    const showPreview = () => events.emit(SHOW_PREVIEW, emoji);
+    const hidePreview = () => events.emit(HIDE_PREVIEW);
 
-    this.emojiButton.innerHTML = content;
-    this.emojiButton.tabIndex = -1;
-
-    this.emojiButton.dataset.emoji = this.emoji.emoji;
-    if (this.emoji.custom) {
-      this.emojiButton.dataset.custom = 'true';
-    }
-    this.emojiButton.title = this.emoji.name;
-
-    this.emojiButton.addEventListener('focus', () => this.onEmojiHover());
-    this.emojiButton.addEventListener('blur', () => this.onEmojiLeave());
-    this.emojiButton.addEventListener('click', () => this.onEmojiClick());
-    this.emojiButton.addEventListener('mouseover', () => this.onEmojiHover());
-    this.emojiButton.addEventListener('mouseout', () => this.onEmojiLeave());
-
-    // if (this.renderer.lazyLoad && this.lazy) {
-    //   this.emojiButton.style.opacity = '0.1';
-    // }
-
-    return this.emojiButton;
+    button.addEventListener('focus', showPreview);
+    button.addEventListener('mouseover', showPreview);
+    button.addEventListener('blur', hidePreview);
+    button.addEventListener('mouseout', hidePreview);
   }
 
-  onEmojiClick() {
-    // TODO move this side effect out of Emoji, make the recent module listen for event
-    if (
-      (!this.emoji.variations || !this.showVariants || !this.options.uiElements.includes(PickerUIElement.VARIANTS)) &&
-      this.options.uiElements.includes(PickerUIElement.RECENTS)
-    ) {
-      save(this.emoji, this.options);
-    }
-
-    this.events.emit(EMOJI, {
-      emoji: this.emoji,
-      showVariants: this.showVariants,
-      button: this.emojiButton
-    });
-  }
-
-  onEmojiHover() {
-    if (this.showPreview) {
-      this.events.emit(SHOW_PREVIEW, this.emoji);
-    }
-  }
-
-  onEmojiLeave() {
-    if (this.showPreview) {
-      this.events.emit(HIDE_PREVIEW);
-    }
-  }
+  return button;
 }

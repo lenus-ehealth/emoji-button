@@ -7,6 +7,8 @@ export default class NativeRenderer {
   }
 
   render(emoji) {
-    return emoji.emoji;
+    const container = document.createElement('span');
+    container.innerHTML = emoji.emoji;
+    return container;
   }
 }

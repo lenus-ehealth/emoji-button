@@ -2,10 +2,10 @@ import { findByClass } from './util';
 
 import * as classes from './styles';
 
-import { CategoryButtons, categoryIcons } from './categoryButtons';
+import { renderCategoryButtons, CategoryButtons, categoryIcons } from './categoryButtons';
 import { EmojiContainer } from './emojiContainer';
 
-import { CATEGORY_CLICKED } from './events';
+import { CATEGORY_CLICKED, SET_ACTIVE_CATEGORY } from './events';
 
 import { createElement, bindMethods, findAllByClass } from './util';
 import { getRecents } from './recent';
@@ -56,8 +56,7 @@ export class EmojiArea {
     this.container = createElement('div');
 
     if (this.showCategoryButtons) {
-      this.categoryButtons = new CategoryButtons(this.options, this.events, this.i18n);
-      this.container.appendChild(this.categoryButtons.render());
+      this.container.appendChild(renderCategoryButtons(this.options, this.events, this.i18n));
     }
 
     this.emojis = createElement('div', classes.emojis);
@@ -104,10 +103,7 @@ export class EmojiArea {
 
     this.selectCategory(initialCategory, false);
     this.currentCategory = this.categories.indexOf(initialCategory);
-
-    if (this.showCategoryButtons) {
-      this.categoryButtons.setActiveButton(this.currentCategory, false);
-    }
+    this.events.emit(SET_ACTIVE_CATEGORY, this.currentCategory, false);
   }
 
   get currentCategoryEl() {
@@ -134,9 +130,7 @@ export class EmojiArea {
         this.focusedEmoji.tabIndex = -1;
 
         if (this.focusedIndex === this.currentEmojiCount - 1 && this.currentCategory < this.categories.length - 1) {
-          if (this.showCategoryButtons) {
-            this.categoryButtons.setActiveButton(++this.currentCategory);
-          }
+          this.events.emit(SET_ACTIVE_CATEGORY, ++this.currentCategory);
           this.setFocusedEmoji(0);
         } else if (this.focusedIndex < this.currentEmojiCount - 1) {
           this.setFocusedEmoji(this.focusedIndex + 1);
@@ -146,9 +140,7 @@ export class EmojiArea {
         this.focusedEmoji.tabIndex = -1;
 
         if (this.focusedIndex === 0 && this.currentCategory > 0) {
-          if (this.showCategoryButtons) {
-            this.categoryButtons.setActiveButton(--this.currentCategory);
-          }
+          this.events.emit(SET_ACTIVE_CATEGORY, --this.currentCategory);
           this.setFocusedEmoji(this.currentEmojiCount - 1);
         } else {
           this.setFocusedEmoji(Math.max(0, this.focusedIndex - 1));
@@ -163,9 +155,7 @@ export class EmojiArea {
           this.currentCategory < this.categories.length - 1
         ) {
           this.currentCategory++;
-          if (this.showCategoryButtons) {
-            this.categoryButtons.setActiveButton(this.currentCategory);
-          }
+          this.events.emit(SET_ACTIVE_CATEGORY, this.currentCategory);
           this.setFocusedEmoji(Math.min(this.focusedIndex % this.emojisPerRow, this.currentEmojiCount - 1));
         } else if (this.currentEmojiCount - this.focusedIndex > this.emojisPerRow) {
           this.setFocusedEmoji(this.focusedIndex + this.emojisPerRow);
@@ -188,9 +178,7 @@ export class EmojiArea {
               : previousCategoryCount - previousLastRowCount + currentColumn;
 
           this.currentCategory--;
-          if (this.showCategoryButtons) {
-            this.categoryButtons.setActiveButton(this.currentCategory);
-          }
+          this.events.emit(SET_ACTIVE_CATEGORY, this.currentCategory);
 
           this.setFocusedEmoji(newIndex);
         } else {
@@ -233,7 +221,14 @@ export class EmojiArea {
     this.headers.push(nameEl);
 
     this.emojis.appendChild(
-      new EmojiContainer(emojis, this.renderer, true, this.events, this.options, category !== EmojiCategory.RECENTS).render()
+      new EmojiContainer(
+        emojis,
+        this.renderer,
+        true,
+        this.events,
+        this.options,
+        category !== EmojiCategory.RECENTS
+      ).render()
     );
   };
 
@@ -246,9 +241,7 @@ export class EmojiArea {
     const categoryIndex = this.categories.indexOf(category);
     this.currentCategory = categoryIndex;
     this.setFocusedEmoji(0, false);
-    if (this.showCategoryButtons) {
-      this.categoryButtons.setActiveButton(this.currentCategory, focus);
-    }
+    this.events.emit(SET_ACTIVE_CATEGORY, this.currentCategory, focus);
 
     const targetPosition = this.headerOffsets[categoryIndex];
     this.emojis.scrollTop = targetPosition;
@@ -273,8 +266,6 @@ export class EmojiArea {
     }
 
     this.currentCategory = closestHeaderIndex - 1;
-    if (this.showCategoryButtons) {
-      this.categoryButtons.setActiveButton(this.currentCategory, false);
-    }
+    this.events.emit(SET_ACTIVE_CATEGORY, this.currentCategory, false);
   }
 }
