@@ -7,7 +7,7 @@
     "javascript"
   ],
   "main": "dist/index.js",
-  "module": "dist/index.js",
+  "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "cross-env NODE_ENV=production rollup -c",
